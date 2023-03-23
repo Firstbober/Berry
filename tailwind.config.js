@@ -23,9 +23,13 @@ module.exports = {
           900: '#982649'
         }
       },
+      backgroundImage: {
+        'welcomeHeroLight': 'url("/images/background/background-light.jpg")'
+      }
     },
     fontFamily: {
-      sans: ['Sarabun', 'sans-serif']
+      sans: ['Sarabun', 'sans-serif'],
+      // NotoSans: ['Noto Sans', 'sans-serif']
     }
   },
   plugins: [],

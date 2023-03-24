@@ -10,18 +10,8 @@ module.exports = {
       colors: {
         black: '#172121',
         white: '#EBEBFF',
-        indigo: {
-          800: '#2B3661',
-          700: '#5461AF',
-          600: '#646FB6'
-        },
-        green: {
-          500: '#50C878',
-          800: '#296A46'
-        },
-        pink: {
-          900: '#982649'
-        }
+        brandPink: '#F64A8A',
+        brandRed: '#ED2839'
       },
       backgroundImage: {
         'welcomeHeroLight': 'url("/images/background/background-light.jpg")'

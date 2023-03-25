@@ -25,7 +25,7 @@ const Welcome: Component = () => {
 
 	const Header = ({ title }) => {
 		return (
-			<header class="text-5xl font-black mb-6">{title}</header>
+			<header class="text-5xl font-black mb-6 text-center">{title}</header>
 		)
 	}
 
@@ -42,12 +42,13 @@ const Welcome: Component = () => {
 	const TextField = ({
 		className = "",
 		label = "",
-		placeholder = ""
+		placeholder = "",
+		type = "text"
 	}) => {
 		return (
-			<label class={`flex flex-col mt-8 ${className}`}>
+			<label class={`flex flex-col ${className}`}>
 				<span class="text-gray-700 uppercase font-semibold mb-2 text-sm">{label}</span>
-				<input type="text" placeholder={placeholder} class="rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none" />
+				<input type={type} placeholder={placeholder} class="rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none border-black border-2" />
 			</label>
 		)
 	}
@@ -61,6 +62,28 @@ const Welcome: Component = () => {
 					<p class="text-center text-lg text-gray-600">
 						Fill out required details and you'll be ready to go.
 					</p>
+
+					<section class="flex mt-8 w-full">
+						<TextField className="w-full"
+							label="Username" />
+					</section>
+
+					<section class="flex flex-col mt-6 w-full">
+						<TextField className="w-full"
+							label="Password" type="password" />
+						<TextField className="w-full mt-2"
+							label="Confirm Password" type="password" />
+					</section>
+
+					<section class="flex mt-6 w-full">
+						<TextField className="w-full"
+							label="Email" type="email" />
+					</section>
+
+					<section class="mt-auto flex justify-between w-full text-lg">
+						<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100">I want to sign in</button>
+						<ActionButton text={"Create"} active={false} />
+					</section>
 				</Slide>
 				<Slide>
 					<Header title={"Sign in"} />
@@ -68,7 +91,7 @@ const Welcome: Component = () => {
 						Use your identifier to continue.
 					</p>
 
-					<section class="w-full">
+					<section class="w-full mt-8">
 						<TextField className="w-full"
 							label="Matrix ID" placeholder="Matrix ID (@yours_truly:example.org)" />
 					</section>

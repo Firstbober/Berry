@@ -10,6 +10,7 @@
   "author": "Firstbober",
   "license": "AGPL-3.0-only",
   "devDependencies": {
+    "@types/validator": "^13.7.14",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4",
@@ -22,6 +23,7 @@
     "@fontsource/sarabun": "^4.5.9",
     "@solidjs/router": "^0.8.1",
     "keen-slider": "^6.8.5",
-    "solid-js": "^1.6.10"
+    "solid-js": "^1.6.10",
+    "validator": "^13.9.0"
   }
 }

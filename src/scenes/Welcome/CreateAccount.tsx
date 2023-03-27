@@ -1,6 +1,16 @@
-import { ActionButton, Header, Slide, TextField } from "./Shared"
+import { createEffect, createSignal } from "solid-js"
+import { ActionButton, createTextField, Header, Slide, TextField } from "./Shared"
 
 export const CreateAccount = () => {
+	const [username, setUsername] = createTextField()
+	const [password, setPassword] = createTextField()
+	const [confirmPassword, setConfirmPassword] = createTextField()
+	const [email, setEmail] = createTextField()
+
+	const isFormValid = () => {
+		return username().isValid && password().isValid && confirmPassword().isValid && email().isValid
+	}
+
 	return (
 		<Slide>
 			<Header title={"Create account"} />
@@ -10,26 +20,29 @@ export const CreateAccount = () => {
 
 			<section class="w-full">
 				<section class="flex mt-8 w-full">
-					<TextField className="w-full"
-						label="Username" />
+					<TextField className="w-full" onInput={setUsername}
+						label="Username" minLen={1} />
 				</section>
 
 				<section class="flex flex-col mt-6 w-full">
-					<TextField className="w-full"
-						label="Password" type="password" />
-					<TextField className="w-full mt-2"
-						label="Confirm Password" type="password" />
+					<TextField className="w-full" onInput={setPassword} label="Password" type="password" minLen={8} />
+					<TextField className="w-full mt-2" masterPassword={password().value}
+						onInput={setConfirmPassword} label="Confirm Password" type="password" minLen={1} />
 				</section>
 
 				<section class="flex mt-6 w-full">
-					<TextField className="w-full"
-						label="Email" type="email" />
+					<TextField className="w-full" onInput={setEmail}
+						label="Email" type="email" minLen={1} />
 				</section>
 			</section>
 
 			<section class="mt-auto flex justify-between w-full text-lg">
 				<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100">I want to sign in</button>
-				<ActionButton text={"Create"} active={false} />
+				{
+					isFormValid()
+						? <ActionButton text={"Create"} active={isFormValid()} />
+						: <ActionButton text={"Create"} active={isFormValid()} />
+				}
 			</section>
 		</Slide>
 	)

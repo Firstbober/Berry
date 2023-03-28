@@ -1,7 +1,10 @@
 import { createEffect, createSignal } from "solid-js"
 import { ActionButton, createTextField, Header, Slide, TextField } from "./Shared"
 
-export const CreateAccount = () => {
+export const CreateAccount = (props: {
+	onNext?: () => void,
+	onBack?: () => void,
+}) => {
 	const [username, setUsername] = createTextField()
 	const [password, setPassword] = createTextField()
 	const [confirmPassword, setConfirmPassword] = createTextField()
@@ -37,11 +40,12 @@ export const CreateAccount = () => {
 			</section>
 
 			<section class="mt-auto flex justify-between w-full text-lg">
-				<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100">I want to sign in</button>
+				<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100"
+					onClick={props.onBack}>I want to sign in</button>
 				{
 					isFormValid()
-						? <ActionButton text={"Create"} active={isFormValid()} />
-						: <ActionButton text={"Create"} active={isFormValid()} />
+						? <ActionButton text={"Create"} active={isFormValid()} onClick={props.onNext} />
+						: <ActionButton text={"Create"} active={isFormValid()} onClick={props.onNext} />
 				}
 			</section>
 		</Slide>

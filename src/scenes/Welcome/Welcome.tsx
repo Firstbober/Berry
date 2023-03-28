@@ -22,9 +22,6 @@ const Welcome: Component = () => {
 		<section class="w-full h-full bg-white dark:bg-black text-black dark:text-white
 			lg:w-1/2 lg:h-4/5 xl:w-1/3 lg:rounded lg:shadow-lg lg:mb-12">
 			<div ref={sectionSlider} class="keen-slider h-full">
-				<CreateAccount />
-				<SignIn />
-
 				<Slide>
 					<img src="/images/logos/logo.svg" alt="Berry Logo" class="w-48 mb-2 lg:w-36" />
 					<Header title={"Berry"} />
@@ -34,8 +31,11 @@ const Welcome: Component = () => {
 						<b class="font-semibold"> security</b> and unrivaled <b class="font-semibold">privacy</b>.
 					</p>
 
-					<ActionButton onClick={() => keenSlider.next()} text={"Let's Get Started"} className="mt-auto" />
+					<ActionButton onClick={() => keenSlider.moveToIdx(1)} text={"Let's Get Started"} className="mt-auto" />
 				</Slide>
+
+				<SignIn onBack={() => keenSlider.moveToIdx(2)} />
+				<CreateAccount onBack={() => keenSlider.moveToIdx(1)} />
 			</div>
 		</section>
 	</main>;

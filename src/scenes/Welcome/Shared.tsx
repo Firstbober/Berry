@@ -28,10 +28,18 @@ export const ActionButton = ({ onClick = undefined, text, active = true, classNa
 	)
 }
 
+export const SecondaryButton = ({ onClick = undefined, text, active = true, className = "" }) => {
+	return (
+		<button class={`p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100 ${className}`}
+			onClick={onClick}>{text}</button>
+	)
+}
+
 export const TextField = (props: {
 	className?: string,
 	label: string,
 	placeholder?: string,
+	default?: string,
 	type?: "text" | "password" | "email",
 	minLen?: number,
 
@@ -84,7 +92,7 @@ export const TextField = (props: {
 				if (!editFlag()) setEditFlag(true)
 				setValue((event.target as HTMLInputElement).value)
 			}} class={`rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none border-2 ${isValid() ? `border-black` : `border-red-500`
-				}`} />
+				}`} value={props.default ? props.default : ''} />
 			{
 				isValid()
 					? <></>

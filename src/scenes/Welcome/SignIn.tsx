@@ -1,4 +1,4 @@
-import { ActionButton, createTextField, Header, Slide, TextField } from "./Shared"
+import { ActionButton, createTextField, Header, SecondaryButton, Slide, TextField } from "./Shared"
 
 export const SignIn = (props: {
 	onNext?: () => void,
@@ -20,8 +20,7 @@ export const SignIn = (props: {
 			</section>
 
 			<section class="mt-auto flex justify-between w-full text-lg">
-				<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100"
-					onClick={props.onBack}>Create account</button>
+				<SecondaryButton onClick={props.onBack} text={"Create account"} />
 				{
 					matrixID().isValid
 						? <ActionButton text={"Next"} active={true} onClick={props.onNext} />

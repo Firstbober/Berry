@@ -6,6 +6,7 @@ import KeenSlider, { KeenSliderInstance } from 'keen-slider'
 import { CreateAccount } from "./CreateAccount";
 import { SignIn } from "./SignIn";
 import { ActionButton, Header, Slide } from "./Shared";
+import { ServerSelect } from "./ServerSelect";
 
 const Welcome: Component = () => {
 	let sectionSlider: HTMLDivElement;
@@ -35,7 +36,9 @@ const Welcome: Component = () => {
 				</Slide>
 
 				<SignIn onBack={() => keenSlider.moveToIdx(2)} />
-				<CreateAccount onBack={() => keenSlider.moveToIdx(1)} />
+
+				<ServerSelect onBack={() => keenSlider.moveToIdx(1)} onNext={() => keenSlider.moveToIdx(3)} />
+				<CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
 			</div>
 		</section>
 	</main>;

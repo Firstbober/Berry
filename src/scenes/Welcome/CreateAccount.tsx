@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from "solid-js"
-import { ActionButton, createTextField, Header, Slide, TextField } from "./Shared"
+import { ActionButton, createTextField, Header, SecondaryButton, Slide, TextField } from "./Shared"
 
 export const CreateAccount = (props: {
 	onNext?: () => void,
@@ -40,8 +40,7 @@ export const CreateAccount = (props: {
 			</section>
 
 			<section class="mt-auto flex justify-between w-full text-lg">
-				<button class="p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100"
-					onClick={props.onBack}>I want to sign in</button>
+				<SecondaryButton onClick={props.onBack} text={"Go back"} />
 				{
 					isFormValid()
 						? <ActionButton text={"Create"} active={isFormValid()} onClick={props.onNext} />

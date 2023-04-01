@@ -16,14 +16,14 @@ const ReloadToast = () => {
 	})
 
 	return (
-		<Show when={offlineReady() || needRefresh()}>
+		<Show when={needRefresh()}>
 			<section class='absolute w-full flex justify-center p-2 z-10'>
 				<div class='bg-black text-white p-2 pl-3 pr-3 rounded-md w-full shadow-md flex items-center font-semibold'>
 					<img src="/icons/remixicon/refresh-line.svg" alt="Refresh" class='invert mr-3' />
 					<span>New app version is available</span>
 
 					<button class='ml-auto text-brandPink bg-white bg-opacity-0 active:bg-opacity-20
-					pr-3 pl-3 p-1 rounded'>Reload</button>
+					pr-3 pl-3 p-1 rounded' onClick={() => updateServiceWorker(true)}>Reload</button>
 				</div>
 			</section>
 		</Show>

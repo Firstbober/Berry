@@ -2,7 +2,9 @@ import { defineConfig } from 'vite';
 
 import solidPlugin from 'vite-plugin-solid';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa'
+import { comlink } from 'vite-plugin-comlink'
 
+// PWA options for VitePWA plugin
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: 'development',
   base: '/',
@@ -48,8 +50,14 @@ const pwaOptions: Partial<VitePWAOptions> = {
 export default defineConfig({
   plugins: [
     solidPlugin(),
-    VitePWA(pwaOptions)
+    VitePWA(pwaOptions),
+    comlink()
   ],
+  worker: {
+    plugins: [
+      comlink()
+    ]
+  },
   server: {
     port: 3000,
   },

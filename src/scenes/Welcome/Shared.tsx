@@ -1,7 +1,6 @@
 import { children, createEffect, createRenderEffect, createSignal, JSX, Setter } from "solid-js";
 
 import isEmail from 'validator/es/lib/isEmail';
-import isLength from 'validator/es/lib/isLength';
 
 export const Slide = (props: { children: JSX.Element }) => {
 	return (
@@ -24,14 +23,14 @@ export const ActionButton = ({ onClick = undefined, text, active = true, classNa
 			text-white p-3 pl-6 pr-6 rounded lg:p-2 lg:pl-5 lg:pr-5
 			text-xl font-semibold shadow-xl duration-100 ${active ? `hover:brightness-125 active:scale-110` : `grayscale cursor-default`
 			} ${className}`}
-			onClick={onClick}>{text}</button>
+			onClick={onClick} autofocus disabled={!active}>{text}</button>
 	)
 }
 
 export const SecondaryButton = ({ onClick = undefined, text, active = true, className = "" }) => {
 	return (
-		<button class={`p-3 lg:p-2 text-brandRed active:scale-110 hover:brightness-125 duration-100 ${className}`}
-			onClick={onClick}>{text}</button>
+		<button class={`p-3 lg:p-2 text-brandRed ${active ? `active:scale-110 hover:brightness-125` : `grayscale cursor-default`} duration-100 ${className}`}
+			onClick={onClick} disabled={!active}>{text}</button>
 	)
 }
 
@@ -42,6 +41,7 @@ export const TextField = (props: {
 	default?: string,
 	type?: "text" | "password" | "email",
 	minLen?: number,
+	autofocus?: boolean,
 
 	onInput?: (ev: { isValid: boolean, value: string }) => void,
 
@@ -88,11 +88,15 @@ export const TextField = (props: {
 	return (
 		<label class={`flex flex-col ${props.className}`}>
 			<span class="text-gray-700 uppercase font-semibold mb-2 text-sm">{props.label}</span>
-			<input type={props.type} placeholder={props.placeholder} onInput={(event) => {
-				if (!editFlag()) setEditFlag(true)
-				setValue((event.target as HTMLInputElement).value)
-			}} class={`rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none border-2 ${isValid() ? `border-black` : `border-red-500`
-				}`} value={props.default ? props.default : ''} />
+			<input type={props.type} placeholder={props.placeholder}
+				onInput={(event) => {
+					if (!editFlag()) setEditFlag(true)
+					setValue((event.target as HTMLInputElement).value)
+				}}
+				class={`rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none border-2 ${isValid() ? `border-black` : `border-red-500`
+					}`}
+				value={props.default ? props.default : ''}
+				autofocus={props.autofocus} />
 			{
 				isValid()
 					? <></>
@@ -102,9 +106,9 @@ export const TextField = (props: {
 	)
 }
 
-export const createTextField = () => {
+export const createTextField = (value: string = "") => {
 	return createSignal({
-		value: "",
+		value: value,
 		isValid: false
 	})
 }

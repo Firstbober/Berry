@@ -10,7 +10,8 @@
     "types": [
       "vite/client",
       "vite-plugin-pwa/info",
-      "vite-plugin-pwa/solid"
+      "vite-plugin-pwa/solid",
+      "vite-plugin-comlink/client"
     ],
     "noEmit": true,
     "isolatedModules": true

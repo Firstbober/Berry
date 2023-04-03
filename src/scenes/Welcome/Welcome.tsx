@@ -4,15 +4,17 @@ import 'keen-slider/keen-slider.min.css'
 import KeenSlider, { KeenSliderInstance } from 'keen-slider'
 
 import { CreateAccount } from "./CreateAccount";
-import { SignIn } from "./SignIn";
+import { AuthLoginPassword } from "./AuthMethods/AuthLoginPassword";
 import { ActionButton, Header, Slide } from "./Shared";
 import { ServerSelect } from "./ServerSelect";
+import { client } from "../../client/client";
+import Error from "./Error";
 
 const Welcome: Component = () => {
 	let sectionSlider: HTMLDivElement;
 	let keenSlider: KeenSliderInstance;
 
-	onMount(() => {
+	onMount(async () => {
 		keenSlider = new KeenSlider(
 			sectionSlider, {
 			drag: false
@@ -35,10 +37,27 @@ const Welcome: Component = () => {
 					<ActionButton onClick={() => keenSlider.moveToIdx(1)} text={"Let's Get Started"} className="mt-auto" />
 				</Slide>
 
-				<SignIn onBack={() => keenSlider.moveToIdx(2)} />
+				<ServerSelect onNext={(domain) => {
+					client.validateDomain(domain).then(v => {
+						console.log("here is the response from the client.validateDomain:", v)
+					})
+					keenSlider.moveToIdx(3)
+				}} />
 
-				<ServerSelect onBack={() => keenSlider.moveToIdx(1)} onNext={() => keenSlider.moveToIdx(3)} />
-				<CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
+				<Error message="The provider is not compatible with the Berry yet. If you have any questions don't hesitate to message us." />
+				<Slide>
+					<img src="/images/logos/logo.svg" alt="Berry Logo" class="w-36 mb-auto mt-auto lg:w-28 animate-pulse" />
+				</Slide>
+
+				{/* TODO Somewhere here we will prompt user for their preffered log in method
+					(https://spec.matrix.org/v1.5/client-server-api/#authentication-types) */}
+
+				<AuthLoginPassword onBack={() => keenSlider.moveToIdx(2)} />
+
+				{/* <CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
+
+					Currently the registation is put on hold until the client is functional
+					enough */}
 			</div>
 		</section>
 	</main>;

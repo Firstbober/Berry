@@ -1,9 +1,13 @@
-import { ActionButton, Header, SecondaryButton, Slide, TextField } from "./Shared"
+import { ActionButton, createTextField, Header, Slide, TextField } from "./Shared"
+
+const DEFAULT_PROVIDER = "matrix.org";
 
 export const ServerSelect = (props: {
-	onNext?: () => void,
+	onNext?: (domain: string) => void,
 	onBack?: () => void,
 }) => {
+	const [domain, setDomain] = createTextField(DEFAULT_PROVIDER)
+
 	return (
 		<Slide>
 			<Header title={"Set your provider"} />
@@ -12,16 +16,15 @@ export const ServerSelect = (props: {
 				<b class="font-semibold"> yahoo.com</b> and their child an <b class="font-semibold">nuke.africa</b>.
 			</p>
 
-			<section class="w-full mt-8">
-				<TextField className="w-full"
-					label="Domain" placeholder="matrix.org"
-					minLen={4} default={"matrix.org"} />
-			</section>
+			<form class="flex flex-col w-full h-full mt-8" onSubmit={(e) => e.preventDefault()}>
+				<TextField className="w-full" autofocus={true}
+					label="Domain" placeholder={DEFAULT_PROVIDER}
+					minLen={4} default={DEFAULT_PROVIDER} onInput={setDomain} />
 
-			<section class="mt-auto flex justify-between w-full text-lg">
-				<SecondaryButton text={"I want to sign in"} onClick={props.onBack} />
-				<ActionButton text={"Next"} onClick={props.onNext} />
-			</section>
+				<section class="mt-auto flex justify-center w-full text-lg">
+					<ActionButton text={"Continue"} onClick={() => props.onNext(domain().value)} />
+				</section>
+			</form>
 		</Slide>
 	)
 }

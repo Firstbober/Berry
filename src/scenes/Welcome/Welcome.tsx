@@ -1,4 +1,4 @@
-import { Component, onMount } from "solid-js";
+import { Component, createSignal, onMount } from "solid-js";
 
 import 'keen-slider/keen-slider.min.css'
 import KeenSlider, { KeenSliderInstance } from 'keen-slider'
@@ -9,10 +9,13 @@ import { ActionButton, Header, Slide } from "./Shared";
 import { ServerSelect } from "./ServerSelect";
 import { client } from "../../client/client";
 import Error from "./Error";
+import error from "../../client/error";
 
 const Welcome: Component = () => {
 	let sectionSlider: HTMLDivElement;
 	let keenSlider: KeenSliderInstance;
+
+	let [errorMessage, setErrorMessage] = createSignal("")
 
 	onMount(async () => {
 		keenSlider = new KeenSlider(
@@ -38,13 +41,27 @@ const Welcome: Component = () => {
 				</Slide>
 
 				<ServerSelect onNext={(domain) => {
-					client.validateDomain(domain).then(v => {
-						console.log("here is the response from the client.validateDomain:", v)
-					})
 					keenSlider.moveToIdx(3)
+					client.validateDomain(domain).then(res => {
+						if (res.ok == false) {
+							keenSlider.moveToIdx(2)
+
+							// TODO: Errors here should be in some array or object maybe
+							// so they can be easily edited/translated in the future.
+							return setErrorMessage(
+								res.error == error.Network
+									? "Communication with the provider failed. Please check you internet connection or provider domain."
+									: res.error == error.InvalidJSON
+										? `The provider is not compatible with the Berry yet. If you have any questions don't hesitate to message us. (#${res.error})`
+										: "This is unexpected!"
+							)
+						}
+
+						keenSlider.moveToIdx(4)
+					})
 				}} />
 
-				<Error message="The provider is not compatible with the Berry yet. If you have any questions don't hesitate to message us." />
+				<Error message={errorMessage()} onBack={() => keenSlider.prev()} />
 				<Slide>
 					<img src="/images/logos/logo.svg" alt="Berry Logo" class="w-36 mb-auto mt-auto lg:w-28 animate-pulse" />
 				</Slide>

@@ -4,5 +4,7 @@ const mWorker = new ComlinkWorker<typeof import("./matrix")>(
 
 export namespace client {
 	// TODO: We might want to intercept the call and cache the results for future use.
-	export const validateDomain = mWorker.validateDomain
+	export async function validateDomain(domain: string) {
+		return mWorker.validateDomain(domain)
+	}
 }

@@ -22,6 +22,7 @@
     "workbox-window": "^6.5.4"
   },
   "dependencies": {
+    "@exodus/schemasafe": "^1.0.0",
     "@fontsource/noto-sans": "^4.5.11",
     "@fontsource/sarabun": "^4.5.9",
     "@solidjs/router": "^0.8.1",

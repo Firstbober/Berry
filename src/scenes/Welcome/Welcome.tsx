@@ -72,6 +72,7 @@ const Welcome: Component = () => {
 				<AuthLoginPassword
 					onBack={() => keenSlider.moveToIdx(2)}
 					onNext={(username, password) => {
+						// Authentication flow for login + password combo.
 						
 					}}
 				/>

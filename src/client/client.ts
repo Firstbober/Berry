@@ -69,4 +69,9 @@ export namespace client {
 	export async function loginGetFlows(homeserver: string) {
 		return mWorker.loginGetFlows(homeserver)
 	}
+
+	/// Log in into user account using login + password combo.
+	export async function loginPassword(homeserver: string, username: string, password: string) {
+		return mWorker.loginPassword(homeserver, username, password)
+	}
 }

@@ -148,8 +148,7 @@ namespace schema {
 					}
 				},
 				"required": [
-					"m.homeserver",
-					"m.identity_server"
+					"m.homeserver"
 				]
 			}
 		},

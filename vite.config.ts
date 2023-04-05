@@ -58,6 +58,9 @@ export default defineConfig({
       comlink()
     ]
   },
+  define: {
+    BERRY_VERSION: JSON.stringify(process.env.npm_package_version)
+  },
   server: {
     port: 3000,
   },

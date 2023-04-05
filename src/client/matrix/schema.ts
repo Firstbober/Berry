@@ -102,6 +102,63 @@ namespace schema {
 			"flows"
 		]
 	}, parserOptions)
+
+	export const POST_client_v3_login = schemasafeParser({
+		"$schema": "http://json-schema.org/draft-07/schema#",
+		"properties": {
+			"access_token": {
+				"type": "string"
+			},
+			"device_id": {
+				"type": "string"
+			},
+			"expires_in_ms": {
+				"type": "number"
+			},
+			"refresh_token": {
+				"type": "string"
+			},
+			"user_id": {
+				"type": "string"
+			},
+			"well_known": {
+				"type": "object",
+				"properties": {
+					"m.homeserver": {
+						"type": "object",
+						"properties": {
+							"base_url": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"base_url"
+						]
+					},
+					"m.identity_server": {
+						"type": "object",
+						"properties": {
+							"base_url": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"base_url"
+						]
+					}
+				},
+				"required": [
+					"m.homeserver",
+					"m.identity_server"
+				]
+			}
+		},
+		"required": [
+			"access_token",
+			"device_id",
+			"user_id"
+		]
+	}, parserOptions)
 }
 
 export default schema

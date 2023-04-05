@@ -9,7 +9,7 @@ import { ActionButton, Header, Slide } from "./Shared";
 import { ServerSelect } from "./ServerSelect";
 import { client } from "../../client/client";
 import Error from "./Error";
-import error from "../../client/error";
+import { Error as mxcError, ErrorType } from "../../client/error";
 
 const Welcome: Component = () => {
 	let sectionSlider: HTMLDivElement;
@@ -23,6 +23,18 @@ const Welcome: Component = () => {
 			drag: false
 		})
 	})
+
+	const handleErrorMessages = (err: mxcError) => {
+		return setErrorMessage(
+			err.type == ErrorType.Network
+				? `Communication with the provider failed. Please check you internet connection or provider domain. (#${err.type})`
+				: err.type == ErrorType.InvalidJSON || err.type == ErrorType.Unsupported
+					? `The provider is not compatible with the Berry yet. If you have any questions don't hesitate to message us. (#${err.type})`
+					: err.type == ErrorType.RateLimited
+						? `The provider decided that you are way too fast! Please wait a while before trying again. (#${err.type})`
+						: `This is unexpected!`
+		)
+	}
 
 	return <main class="w-full h-full bg-blue-600 flex lg:justify-center lg:items-center lg:bg-welcomeHeroLight lg:bg-cover">
 		<section class="w-full h-full bg-white dark:bg-black text-black dark:text-white
@@ -40,25 +52,32 @@ const Welcome: Component = () => {
 					<ActionButton onClick={() => keenSlider.moveToIdx(1)} text={"Let's Get Started"} className="mt-auto" />
 				</Slide>
 
-				<ServerSelect onNext={(domain) => {
+				<ServerSelect onNext={async (domain) => {
 					keenSlider.moveToIdx(3)
-					client.validateDomain(domain).then(res => {
-						if (res.ok == false) {
-							keenSlider.moveToIdx(2)
 
-							// TODO: Errors here should be in some array or object maybe
-							// so they can be easily edited/translated in the future.
-							return setErrorMessage(
-								res.error == error.Network
-									? "Communication with the provider failed. Please check you internet connection or provider domain."
-									: res.error == error.InvalidJSON
-										? `The provider is not compatible with the Berry yet. If you have any questions don't hesitate to message us. (#${res.error})`
-										: "This is unexpected!"
-							)
-						}
+					let res = await client.validateDomain(domain);
 
-						keenSlider.moveToIdx(4)
-					})
+					if (res.ok == false) {
+						keenSlider.moveToIdx(2)
+
+						// TODO: Errors here should be in some array or object maybe
+						// so they can be easily edited/translated in the future.
+						return handleErrorMessages(res.error)
+					}
+
+					let flows = await client.loginGetFlows(res.value.homeserver);
+
+					if (flows.ok == false) {
+						keenSlider.moveToIdx(2)
+						return handleErrorMessages(flows.error)
+					}
+
+					if (!flows.value.includes("m.login.password")) {
+						keenSlider.moveToIdx(2)
+						return handleErrorMessages({ type: ErrorType.Unsupported })
+					}
+
+					keenSlider.moveToIdx(4)
 				}} />
 
 				<Error message={errorMessage()} onBack={() => keenSlider.prev()} />
@@ -73,7 +92,7 @@ const Welcome: Component = () => {
 					onBack={() => keenSlider.moveToIdx(2)}
 					onNext={(username, password) => {
 						// Authentication flow for login + password combo.
-						
+
 					}}
 				/>
 

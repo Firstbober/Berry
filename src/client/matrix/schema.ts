@@ -62,7 +62,7 @@ namespace schema {
 		]
 	}, parserOptions)
 
-	export const response_429 = schemasafeParser({
+	export const response_error = schemasafeParser({
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"properties": {
 			"errcode": {

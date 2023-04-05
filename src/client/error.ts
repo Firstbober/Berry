@@ -1,6 +1,17 @@
-enum Error {
+export enum ErrorType {
 	Network,
-	InvalidJSON
+	InvalidJSON,
+	RateLimited
 }
 
-export default Error;
+export type Error =
+	{
+		type: ErrorType.Network
+	} |
+	{
+		type: ErrorType.InvalidJSON
+	} |
+	{
+		type: ErrorType.RateLimited,
+		retryAfterMs: number
+	}

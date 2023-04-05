@@ -1,5 +1,7 @@
 interface ClientLocalData {
 	id: number,
+	finalized: boolean,
+
 	accessToken: string
 }
 

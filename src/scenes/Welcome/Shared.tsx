@@ -42,6 +42,7 @@ export const TextField = (props: {
 	type?: "text" | "password" | "email",
 	minLen?: number,
 	autofocus?: boolean,
+	autocomplete?: string,
 
 	onInput?: (ev: { isValid: boolean, value: string }) => void,
 
@@ -53,6 +54,7 @@ export const TextField = (props: {
 
 	const [editFlag, setEditFlag] = createSignal(false)
 
+	// Run TextField validation algorythm on input field change.
 	createEffect(() => {
 		if (!editFlag())
 			return;
@@ -96,7 +98,9 @@ export const TextField = (props: {
 				class={`rounded bg-black text-white bg-none p-3 lg:p-2 lg:roun outline-none border-2 ${isValid() ? `border-black` : `border-red-500`
 					}`}
 				value={props.default ? props.default : ''}
-				autofocus={props.autofocus} />
+				autofocus={props.autofocus}
+				autocomplete={props.autocomplete}
+			/>
 			{
 				isValid()
 					? <></>

@@ -69,7 +69,12 @@ const Welcome: Component = () => {
 				{/* TODO Somewhere here we will prompt user for their preffered log in method
 					(https://spec.matrix.org/v1.5/client-server-api/#authentication-types) */}
 
-				<AuthLoginPassword onBack={() => keenSlider.moveToIdx(2)} />
+				<AuthLoginPassword
+					onBack={() => keenSlider.moveToIdx(2)}
+					onNext={(username, password) => {
+						
+					}}
+				/>
 
 				{/* <CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
 

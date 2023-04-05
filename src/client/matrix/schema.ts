@@ -61,6 +61,47 @@ namespace schema {
 			"versions"
 		]
 	}, parserOptions)
+
+	export const response_429 = schemasafeParser({
+		"$schema": "http://json-schema.org/draft-07/schema#",
+		"properties": {
+			"errcode": {
+				"type": "string"
+			},
+			"error": {
+				"type": "string"
+			},
+			"retry_after_ms": {
+				"type": "number"
+			}
+		},
+		"required": [
+			"errcode"
+		]
+	}, parserOptions)
+
+	export const GET_client_v3_login = schemasafeParser({
+		"$schema": "http://json-schema.org/draft-07/schema#",
+		"properties": {
+			"flows": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"type"
+					]
+				}
+			}
+		},
+		"required": [
+			"flows"
+		]
+	}, parserOptions)
 }
 
 export default schema

@@ -7,7 +7,7 @@ const mWorker = new ComlinkWorker<typeof import("./matrix")>(
 
 const PREFIX = "berrychat_"
 const dataPerClient: ClientLocalData[] = []
-let currentClient = 0
+let currentClient = -1
 
 // Create comlink-wrapped account class instance to act like a namespace
 const api_Account = await new mWorker.account()
@@ -23,21 +23,25 @@ export namespace client {
 			let clientLocalData: ClientLocalData = {
 				id: Number(cID),
 				finalized: true,
+				active: false,
 
-				accessToken: ""
+				accessToken: "",
+				deviceID: "",
+				userID: ""
 			}
 
 			for (const key of Object.keys(clientLocalData)) {
 				const data = localStorage.getItem(`${PREFIX}${cID}_${key}`)
 				if (!data) continue;
 
-				clientLocalData[key] = data
+				clientLocalData[key] = JSON.parse(data)
 			}
 
 			dataPerClient.push(clientLocalData)
 		}
 
-		// TODO: Here we should also load which client is currently selected as active.
+		const currentClientLS = localStorage.getItem(`${PREFIX}currentClient`)
+		if (currentClientLS) currentClient = JSON.parse(currentClientLS)
 	}
 
 	/// Save current client data into localStorage.
@@ -48,15 +52,24 @@ export namespace client {
 			})
 		))
 
+		let i = -1
 		for (const clientData of dataPerClient) {
+			i += 1
 			if (!clientData.finalized) continue
 
 			for (const [key, val] of Object.entries(clientData)) {
-				localStorage.setItem(`${PREFIX}${clientData.id}_${key}`, val)
+				localStorage.setItem(`${PREFIX}${clientData.id}_${key}`, JSON.stringify(val))
 			}
+
+			id_to_idx_clientdata_map[clientData.id] = i
 		}
 
-		// TODO: Here we should also save which client is currently selected as active.
+		localStorage.setItem(`${PREFIX}currentClient`, JSON.stringify(currentClient))
+	}
+
+	let id_to_idx_clientdata_map = []
+	function getClientData(id: number): ClientLocalData {
+		return dataPerClient[id_to_idx_clientdata_map[id]]
 	}
 
 	// TODO: We might want to intercept the call and cache the results for future use.
@@ -65,6 +78,10 @@ export namespace client {
 	}
 
 	export namespace account {
+		export function isLoggedIn(): boolean {
+			return dataPerClient.length > 0
+		}
+
 		/**
 		 * Get login flows supported by the homeserver
 		 * https://spec.matrix.org/v1.5/client-server-api/#authentication-types
@@ -77,7 +94,28 @@ export namespace client {
 
 		/// Log in into user account using login + password combo. This will also create new client data.
 		export async function loginPassword(provider: ProviderInfo, username: string, password: string) {
-			return api_Account.loginPassword(provider.homeserver, username, password)
+			const loginState = await api_Account.loginPassword(provider.homeserver, username, password)
+			if (loginState.ok == false) return loginState
+
+			const data: ClientLocalData = {
+				id: Math.max(...dataPerClient.map((v) => v.id), 0),
+				finalized: true,
+				active: true,
+
+				providerInfo: provider,
+
+				accessToken: loginState.value.accessToken,
+				deviceID: loginState.value.deviceID,
+				userID: loginState.value.userID,
+
+				expiresInMs: loginState.value.expiresInMs,
+				refreshToken: loginState.value.refreshToken
+			}
+
+			dataPerClient.push(data)
+			currentClient = data.id
+
+			saveClientsToStorage()
 		}
 	}
 }

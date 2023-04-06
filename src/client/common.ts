@@ -22,12 +22,23 @@ export function getClientDisplayName() {
 	return `Berry on ${Object.keys(ua.device).length == 0
 		? Object.keys(ua.os).length == 0
 			? Object.keys(ua.browser).length == 0
-				? "Unknown"
+				? "Browser"
 				: ua.browser.name
 			: Object.keys(ua.browser).length == 0
 				? ua.os.name
 				: `${ua.browser.name} ${ua.os.name}`
-		: ua.device.model}`
+		: ua.device.model == undefined
+			? ua.browser == undefined
+				? ua.os == undefined
+					? "Browser"
+					: ua.os.name == undefined
+						? "Browser"
+						: ua.os.name
+				: ua.browser.name == undefined
+					? "Browser"
+					: ua.browser.name
+			: "Browser"
+		} `
 }
 
 /// Transform Matrix error JSON into internal errors.

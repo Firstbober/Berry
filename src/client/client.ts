@@ -1,5 +1,6 @@
 import { ProviderInfo } from "./common";
 import ClientLocalData from "./matrix/clientLocalData";
+import { Error } from "./error";
 
 const mWorker = new ComlinkWorker<typeof import("./matrix")>(
 	new URL("./matrix", import.meta.url)
@@ -93,7 +94,7 @@ export namespace client {
 		}
 
 		/// Log in into user account using login + password combo. This will also create new client data.
-		export async function loginPassword(provider: ProviderInfo, username: string, password: string) {
+		export async function loginPassword(provider: ProviderInfo, username: string, password: string): AResult<{}, Error> {
 			const loginState = await api_Account.loginPassword(provider.homeserver, username, password)
 			if (loginState.ok == false) return loginState
 
@@ -116,6 +117,8 @@ export namespace client {
 			currentClient = data.id
 
 			saveClientsToStorage()
+
+			return { ok: true, value: {} }
 		}
 	}
 }

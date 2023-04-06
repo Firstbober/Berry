@@ -17,7 +17,7 @@ const ReloadToast = () => {
 
 	return (
 		<Show when={needRefresh()}>
-			<section class='absolute w-full flex justify-center p-2 z-10'>
+			<section class='absolute w-full flex justify-center p-2 z-50'>
 				<div class='bg-black text-white p-2 pl-3 pr-3 rounded-md w-full shadow-md flex items-center font-semibold'>
 					<img src="/icons/remixicon/refresh-line.svg" alt="Refresh" class='invert mr-3' />
 					<span>New app version is available</span>

@@ -1,18 +1,13 @@
 /// <reference lib="webworker" />
 declare const self: DedicatedWorkerGlobalScope;
 
-import { mfetch } from "./common";
+import { mfetch, ProviderInfo } from "./common";
 import { Error, ErrorType } from "./error";
 import { account as _account } from "./matrix/account";
 import schema from "./matrix/schema";
 
 /// Validate passed domain according to https://spec.matrix.org/v1.5/client-server-api/#server-discovery.
-export async function validateDomain(domain: string): AResult<{
-	homeserver: string,
-	identityServer?: string,
-	versions: string[],
-	unstableFeatures: { [key: string]: boolean }
-}, Error> {
+export async function validateDomain(domain: string): AResult<ProviderInfo, Error> {
 	// TODO: Maybe we should sanitize the domain?
 	const wellKnown = await mfetch(`https://${domain}/.well-known/matrix/client`)
 	const versions = await mfetch(`https://${domain}/_matrix/client/versions`)

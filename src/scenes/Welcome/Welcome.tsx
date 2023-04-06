@@ -1,22 +1,27 @@
 import { Component, createSignal, onMount } from "solid-js";
 
+// External
 import 'keen-slider/keen-slider.min.css'
 import KeenSlider, { KeenSliderInstance } from 'keen-slider'
 
+// Components
 import { CreateAccount } from "./CreateAccount";
 import { AuthLoginPassword } from "./AuthMethods/AuthLoginPassword";
 import { ActionButton, Header, Slide } from "./Shared";
 import { ServerSelect } from "./ServerSelect";
+
+// Client
 import { client } from "../../client/client";
 import Error from "./Error";
 import { Error as mxcError, ErrorType } from "../../client/error";
+import { ProviderInfo } from "../../client/common";
 
 const Welcome: Component = () => {
 	let sectionSlider: HTMLDivElement;
 	let keenSlider: KeenSliderInstance;
 
 	let [errorMessage, setErrorMessage] = createSignal("")
-	let [providerInfo, setProviderInfo] = createSignal({})
+	let [providerInfo, setProviderInfo] = createSignal({} as ProviderInfo)
 
 	onMount(async () => {
 		keenSlider = new KeenSlider(

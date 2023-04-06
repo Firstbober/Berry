@@ -1,5 +1,4 @@
-import { Remote } from "comlink";
-import { account } from "./matrix/account";
+import { ProviderInfo } from "./common";
 import ClientLocalData from "./matrix/clientLocalData";
 
 const mWorker = new ComlinkWorker<typeof import("./matrix")>(
@@ -77,12 +76,7 @@ export namespace client {
 		}
 
 		/// Log in into user account using login + password combo. This will also create new client data.
-		export async function loginPassword(provider: {
-			homeserver: string,
-			identityServer?: string,
-			versions: string[],
-			unstableFeatures: { [key: string]: boolean }
-		}, username: string, password: string) {
+		export async function loginPassword(provider: ProviderInfo, username: string, password: string) {
 			return api_Account.loginPassword(provider.homeserver, username, password)
 		}
 	}

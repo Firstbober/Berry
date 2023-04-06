@@ -46,3 +46,11 @@ export function matrixErrcode(error: any): Error {
 	if (errcode == "M_UNAUTHORIZED") return { type: ErrorType.Unauthorized }
 	if (errcode == "M_USER_DEACTIVATED") return { type: ErrorType.UserDeactivated }
 }
+
+/// Necessary information about the provider (home server)
+export interface ProviderInfo {
+	homeserver: string,
+	identityServer?: string,
+	versions: string[],
+	unstableFeatures: { [key: string]: boolean }
+}

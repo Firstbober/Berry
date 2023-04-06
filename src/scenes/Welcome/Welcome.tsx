@@ -16,6 +16,7 @@ const Welcome: Component = () => {
 	let keenSlider: KeenSliderInstance;
 
 	let [errorMessage, setErrorMessage] = createSignal("")
+	let [providerInfo, setProviderInfo] = createSignal({})
 
 	onMount(async () => {
 		keenSlider = new KeenSlider(
@@ -65,7 +66,8 @@ const Welcome: Component = () => {
 						return handleErrorMessages(res.error)
 					}
 
-					let flows = await client.loginGetFlows(res.value.homeserver);
+					setProviderInfo(res.value)
+					let flows = await client.account.loginGetFlows(res.value.homeserver);
 
 					if (flows.ok == false) {
 						keenSlider.moveToIdx(2)
@@ -92,7 +94,7 @@ const Welcome: Component = () => {
 					onBack={() => keenSlider.moveToIdx(2)}
 					onNext={(username, password) => {
 						// Authentication flow for login + password combo.
-
+						keenSlider.moveToIdx(3)
 					}}
 				/>
 

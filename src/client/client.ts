@@ -1,3 +1,5 @@
+import { Remote } from "comlink";
+import { account } from "./matrix/account";
 import ClientLocalData from "./matrix/clientLocalData";
 
 const mWorker = new ComlinkWorker<typeof import("./matrix")>(
@@ -7,6 +9,9 @@ const mWorker = new ComlinkWorker<typeof import("./matrix")>(
 const PREFIX = "berrychat_"
 const dataPerClient: ClientLocalData[] = []
 let currentClient = 0
+
+// Create comlink-wrapped account class instance to act like a namespace
+const api_Account = await new mWorker.account()
 
 export namespace client {
 	/// Load all client data from the localStorage.
@@ -60,18 +65,25 @@ export namespace client {
 		return mWorker.validateDomain(domain)
 	}
 
-	/**
-	 * Get login flows supported by the homeserver
-	 * https://spec.matrix.org/v1.5/client-server-api/#authentication-types
-	 *
-	 * @param homeserver Homeserver
-	 */
-	export async function loginGetFlows(homeserver: string) {
-		return mWorker.loginGetFlows(homeserver)
-	}
+	export namespace account {
+		/**
+		 * Get login flows supported by the homeserver
+		 * https://spec.matrix.org/v1.5/client-server-api/#authentication-types
+		 *
+		 * @param homeserver Homeserver
+		 */
+		export async function loginGetFlows(homeserver: string) {
+			return api_Account.loginGetFlows(homeserver)
+		}
 
-	/// Log in into user account using login + password combo.
-	export async function loginPassword(homeserver: string, username: string, password: string) {
-		return mWorker.loginPassword(homeserver, username, password)
+		/// Log in into user account using login + password combo. This will also create new client data.
+		export async function loginPassword(provider: {
+			homeserver: string,
+			identityServer?: string,
+			versions: string[],
+			unstableFeatures: { [key: string]: boolean }
+		}, username: string, password: string) {
+			return api_Account.loginPassword(provider.homeserver, username, password)
+		}
 	}
 }

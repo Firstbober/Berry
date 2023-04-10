@@ -110,7 +110,7 @@ const Welcome: Component = () => {
           (https://spec.matrix.org/v1.5/client-server-api/#authentication-types) */}
 
         <AuthLoginPassword
-          onBack={() => keenSlider.moveToIdx(2)}
+          onBack={() => keenSlider.moveToIdx(1)}
           onNext={(username, password) => {
             // Authentication flow for login + password combo.
             keenSlider.moveToIdx(3)

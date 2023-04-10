@@ -11,7 +11,7 @@ export const AuthLoginPassword = (props: {
     <Slide>
       <Header title={'Sign in'} />
       <p class="text-center text-lg text-gray-600">
-        Use your username and password to continue.
+        Use your username and password to continue <button class='text-brandRed' onClick={() => props.onBack()}>or change your provider</button>.
       </p>
 
       <form class="flex flex-col w-full h-full mt-8" onSubmit={(e) => e.preventDefault()}>

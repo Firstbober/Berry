@@ -9,7 +9,19 @@ module.exports = {
     extend: {
       colors: {
         black: '#172121',
-        white: '#EBEBFF',
+        white: {
+          DEFAULT: '#EBEBFF',
+          50: '#EBEBFF',
+          100: '#d4d4e6',
+          200: '#bcbccc',
+          300: '#a5a5b3',
+          400: '#8d8d99',
+          500: '#767680',
+          600: '#5e5e66',
+          700: '#46464c',
+          800: '#2f2f33',
+          900: '#171719'
+        },
         brandPink: '#F64A8A',
         brandRed: '#ED2839'
       },

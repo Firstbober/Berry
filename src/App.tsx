@@ -49,7 +49,7 @@ const App: Component = () => {
   const navigate = useNavigate()
   client.loadClientsFromStorage()
 
-  navigate(client.account.isLoggedIn() ? '/' : '/welcome')
+  // navigate(client.account.isLoggedIn() ? '/' : '/welcome')
 
   return (
     <div class='w-full h-full'>

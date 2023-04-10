@@ -1,1 +1,1 @@
-declare const BERRY_VERSION: string;
+declare const BERRY_VERSION: string

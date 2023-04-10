@@ -15,5 +15,7 @@
     ],
     "noEmit": true,
     "isolatedModules": true
-  }
+  },
+  "files": ["./.eslintrc.js", "./vite.config.ts", "./tailwind.config.js", "./postcss.config.js"],
+  "include": ["src"]
 }

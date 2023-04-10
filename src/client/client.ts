@@ -1,124 +1,129 @@
-import { ProviderInfo } from "./common";
-import ClientLocalData from "./matrix/clientLocalData";
-import { Error } from "./error";
+import { ProviderInfo } from './common'
+import ClientLocalData from './matrix/clientLocalData'
+import { Error } from './error'
 
-const mWorker = new ComlinkWorker<typeof import("./matrix")>(
-	new URL("./matrix", import.meta.url)
-);
+// eslint-disable-next-line no-undef
+const mWorker = new ComlinkWorker<typeof import('./matrix')>(
+  new URL('./matrix', import.meta.url)
+)
 
-const PREFIX = "berrychat_"
+const PREFIX = 'berrychat_'
 const dataPerClient: ClientLocalData[] = []
 let currentClient = -1
 
 // Create comlink-wrapped account class instance to act like a namespace
-const api_Account = await new mWorker.account()
+const apiAccount = await new mWorker.Account()
 
 export namespace client {
-	/// Load all client data from the localStorage.
-	export function loadClientsFromStorage() {
-		if (!localStorage.getItem(`${PREFIX}clients`)) return;
-		// [1, 2, 3, ...]
-		const berryClients = localStorage.getItem(`${PREFIX}clients`);
+  /// Load all client data from the localStorage.
+  export function loadClientsFromStorage () {
+    if (!localStorage.getItem(`${PREFIX}clients`)) return
+    // [1, 2, 3, ...]
+    const berryClients = localStorage.getItem(`${PREFIX}clients`)
 
-		for (const cID of berryClients) {
-			let clientLocalData: ClientLocalData = {
-				id: Number(cID),
-				finalized: true,
-				active: false,
+    for (const cID of berryClients) {
+      const clientLocalData: ClientLocalData = {
+        id: Number(cID),
+        finalized: true,
+        active: false,
 
-				accessToken: "",
-				deviceID: "",
-				userID: ""
-			}
+        accessToken: '',
+        deviceID: '',
+        userID: ''
+      }
 
-			for (const key of Object.keys(clientLocalData)) {
-				const data = localStorage.getItem(`${PREFIX}${cID}_${key}`)
-				if (!data) continue;
+      for (const key of Object.keys(clientLocalData)) {
+        const data = localStorage.getItem(`${PREFIX}${cID}_${key}`)
+        if (!data) continue
 
-				clientLocalData[key] = JSON.parse(data)
-			}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        clientLocalData[key] = JSON.parse(data)
+      }
 
-			dataPerClient.push(clientLocalData)
-		}
+      dataPerClient.push(clientLocalData)
+    }
 
-		const currentClientLS = localStorage.getItem(`${PREFIX}currentClient`)
-		if (currentClientLS) currentClient = JSON.parse(currentClientLS)
-	}
+    const currentClientLS = localStorage.getItem(`${PREFIX}currentClient`)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    if (currentClientLS) currentClient = JSON.parse(currentClientLS)
+  }
 
-	/// Save current client data into localStorage.
-	export function saveClientsToStorage() {
-		localStorage.setItem(`${PREFIX}clients`, JSON.stringify(
-			dataPerClient.map((v) => {
-				return v.id
-			})
-		))
+  /// Save current client data into localStorage.
+  export function saveClientsToStorage () {
+    localStorage.setItem(`${PREFIX}clients`, JSON.stringify(
+      dataPerClient.map((v) => {
+        return v.id
+      })
+    ))
 
-		let i = -1
-		for (const clientData of dataPerClient) {
-			i += 1
-			if (!clientData.finalized) continue
+    let i = -1
+    for (const clientData of dataPerClient) {
+      i += 1
+      if (!clientData.finalized) continue
 
-			for (const [key, val] of Object.entries(clientData)) {
-				localStorage.setItem(`${PREFIX}${clientData.id}_${key}`, JSON.stringify(val))
-			}
+      for (const [key, val] of Object.entries(clientData)) {
+        localStorage.setItem(`${PREFIX}${clientData.id}_${key}`, JSON.stringify(val))
+      }
 
-			id_to_idx_clientdata_map[clientData.id] = i
-		}
+      idToIDXclientDataMap[clientData.id] = i
+    }
 
-		localStorage.setItem(`${PREFIX}currentClient`, JSON.stringify(currentClient))
-	}
+    localStorage.setItem(`${PREFIX}currentClient`, JSON.stringify(currentClient))
+  }
 
-	let id_to_idx_clientdata_map = []
-	function getClientData(id: number): ClientLocalData {
-		return dataPerClient[id_to_idx_clientdata_map[id]]
-	}
+  const idToIDXclientDataMap: number[] = []
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function getClientData (id: number): ClientLocalData {
+    return dataPerClient[idToIDXclientDataMap[id]]
+  }
 
-	// TODO: We might want to intercept the call and cache the results for future use.
-	export async function validateDomain(domain: string) {
-		return mWorker.validateDomain(domain)
-	}
+  // TODO: We might want to intercept the call and cache the results for future use.
+  export async function validateDomain (domain: string) {
+    return mWorker.validateDomain(domain)
+  }
 
-	export namespace account {
-		export function isLoggedIn(): boolean {
-			return dataPerClient.length > 0
-		}
+  export namespace account {
+    export function isLoggedIn (): boolean {
+      return dataPerClient.length > 0
+    }
 
-		/**
-		 * Get login flows supported by the homeserver
-		 * https://spec.matrix.org/v1.5/client-server-api/#authentication-types
-		 *
-		 * @param homeserver Homeserver
-		 */
-		export async function loginGetFlows(homeserver: string) {
-			return api_Account.loginGetFlows(homeserver)
-		}
+    /**
+     * Get login flows supported by the homeserver
+     * https://spec.matrix.org/v1.5/client-server-api/#authentication-types
+     *
+     * @param homeserver Homeserver
+     */
+    export async function loginGetFlows (homeserver: string) {
+      return apiAccount.loginGetFlows(homeserver)
+    }
 
-		/// Log in into user account using login + password combo. This will also create new client data.
-		export async function loginPassword(provider: ProviderInfo, username: string, password: string): AResult<{}, Error> {
-			const loginState = await api_Account.loginPassword(provider.homeserver, username, password)
-			if (loginState.ok == false) return loginState
+    /// Log in into user account using login + password combo. This will also create new client data.
+    export async function loginPassword (provider: ProviderInfo, username: string, password: string): AResult<object, Error> {
+      const loginState = await apiAccount.loginPassword(provider.homeserver, username, password)
+      if (loginState.ok === false) return loginState
 
-			const data: ClientLocalData = {
-				id: Math.max(...dataPerClient.map((v) => v.id), 0),
-				finalized: true,
-				active: true,
+      const data: ClientLocalData = {
+        id: Math.max(...dataPerClient.map((v) => v.id), 0),
+        finalized: true,
+        active: true,
 
-				providerInfo: provider,
+        providerInfo: provider,
 
-				accessToken: loginState.value.accessToken,
-				deviceID: loginState.value.deviceID,
-				userID: loginState.value.userID,
+        accessToken: loginState.value.accessToken,
+        deviceID: loginState.value.deviceID,
+        userID: loginState.value.userID,
 
-				expiresInMs: loginState.value.expiresInMs,
-				refreshToken: loginState.value.refreshToken
-			}
+        expiresInMs: loginState.value.expiresInMs,
+        refreshToken: loginState.value.refreshToken
+      }
 
-			dataPerClient.push(data)
-			currentClient = data.id
+      dataPerClient.push(data)
+      currentClient = data.id
 
-			saveClientsToStorage()
+      saveClientsToStorage()
 
-			return { ok: true, value: {} }
-		}
-	}
+      return { ok: true, value: {} }
+    }
+  }
 }

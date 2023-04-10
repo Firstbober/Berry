@@ -1,3 +1,5 @@
+/// <reference types="vite-plugin-comlink/client" />
+
 type Result<T, E = Error> =
   | { ok: true; value: T }
   | { ok: false; error: E };

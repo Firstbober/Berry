@@ -2,7 +2,6 @@ import { Route, Routes, useNavigate } from '@solidjs/router'
 import { Component, createContext, createEffect, createSignal, lazy, Show, useContext } from 'solid-js'
 
 import { client } from './client/client'
-import { getClientDisplayName } from './client/common'
 import ReloadToast from './misc/ReloadToast'
 
 // Oh. My....... Really it isn't much different if I were to place it in the component
@@ -19,8 +18,6 @@ export const useLoadingContext = () => useContext(LoadingContext)
 
 // Component
 const App: Component = () => {
-  console.log(getClientDisplayName())
-
   // Loading screen context
   const loadingContext = makeLoadingContext()
   const [{ }, { intLoadingScreen, intSetLoadingScreen, loadingScreen }] = loadingContext
@@ -29,7 +26,6 @@ const App: Component = () => {
 
   // Timeouts in this effect correspond to the duration in loading screen class
   createEffect(() => {
-    console.log('aaaa')
     loadingDiv.classList.remove('opacity-0')
 
     if (loadingScreen()) {
@@ -70,6 +66,9 @@ const App: Component = () => {
       <LoadingContext.Provider value={loadingContext}>
         <Routes>
           <Route path="/welcome" component={lazy(() => import('./scenes/Welcome/Welcome'))} />
+
+          {/* Must always be last */}
+          <Route path="/" component={lazy(() => import('./scenes/Home/Home'))} />
         </Routes>
       </LoadingContext.Provider>
     </div>

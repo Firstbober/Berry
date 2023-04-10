@@ -38,6 +38,7 @@ const Welcome: Component = () => {
     setLoadingScreen(false)
   })
 
+  // mxcError into human readable message.
   const handleErrorMessages = (err: mxcError) => {
     return setErrorMessage((
       err.type == ErrorType.Network

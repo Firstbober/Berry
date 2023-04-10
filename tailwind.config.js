@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     './index.html',
-    './src/**/*.{js,ts,jsx,tsx,css,md,mdx,html,json,scss}',
+    './src/**/*.{js,ts,jsx,tsx,css,md,mdx,html,json,scss}'
   ],
   darkMode: 'class',
   theme: {
@@ -14,13 +14,13 @@ module.exports = {
         brandRed: '#ED2839'
       },
       backgroundImage: {
-        'welcomeHeroLight': 'url("/images/background/background-light.jpg")'
+        welcomeHeroLight: 'url("/images/background/background-light.jpg")'
       }
     },
     fontFamily: {
-      sans: ['Sarabun', 'sans-serif'],
+      sans: ['Sarabun', 'sans-serif']
       // NotoSans: ['Noto Sans', 'sans-serif']
     }
   },
-  plugins: [],
-};
+  plugins: []
+}

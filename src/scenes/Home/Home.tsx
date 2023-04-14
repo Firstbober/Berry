@@ -1,7 +1,12 @@
 /* @refresh reload */
 
-import { For, onMount } from 'solid-js'
+import { onMount } from 'solid-js'
+
 import { useLoadingContext } from '../../App'
+import { Tabs } from '../../ui/Tabs'
+
+import Invites from './Home/Invites'
+import Friends from './Home/Friends'
 
 export const Home = () => {
   const [{ setLoadingScreen }] = useLoadingContext()
@@ -22,28 +27,11 @@ export const Home = () => {
           <button class='flex items-center justify-center '><img src="/icons/remixicon/compass-3-line.svg" class='contrast-75 w-7 h-7 mr-6 ml-6' /></button>
         </div>
       </section>
-      <section class='flex flex-col max-h-full w-full flex-grow mt-3'>
-        <section class='flex w-full'>
-          <button class='text-lg p-3 pl-6 pr-6 relative font-semibold after:bg-brandRed after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded'>Friends</button>
-          <button class='text-lg p-3 pl-6 pr-6 relative font-semibold text-white-500 '>Invites</button>
-        </section>
-        <section class='w-full h-full relative'>
-          <section class='flex flex-col absolute h-full w-full overflow-y-auto pt-2'>
-          <For each={new Array(10)}>{(_, __) =>
-              <button class='p-3 text-black flex max-w-full border-b border-white-100 last:border-none'>
-                <div class='mr-4 min-w-12 min-h-12 flex-shrink-0 relative'>
-                  <img src="https://picsum.photos/200" class='object-cover w-12 h-12 rounded-full' />
-                  <div class='rounded-full w-4 h-4 bg-gradient-to-tr from-brandRed to-brandPink border-2 border-white absolute right-0 bottom-0'></div>
-                </div>
-                <div class='flex flex-col items-start min-w-0'>
-                  <header class='font-semibold'>Gustavo Smith</header>
-                  <span class='text-white-500 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-full'>Have started the conversation</span>
-                </div>
-              </button>
-          }</For>
-          </section>
-        </section>
-      </section>
+
+      <Tabs labels={['Friends', 'Invites']} className='mt-1'>
+        <Friends />
+        <Invites />
+      </Tabs>
     </section>
 
     {/* Bottom action bar */}

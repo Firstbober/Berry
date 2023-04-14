@@ -8,7 +8,7 @@ export const Tab = (props: {
   children?: JSX.Element,
   className?: string
 }) => {
-  return <section class={`keen-slider__slide w-full h-full ${props.className ? props.className : ''}`}>
+  return <section class={`keen-slider__slide h-full ${props.className ? props.className : ''}`}>
     {props.children}
   </section>
 }

@@ -13,6 +13,7 @@ const NavBar = (props: {
   const [currentTab, setCurrentTab] = createSignal(0)
 
   let iconContainer: HTMLDivElement
+  let parentIconContainer: HTMLDivElement
   let sliderContainer: HTMLDivElement
   let swiper: Swiper
 
@@ -26,6 +27,8 @@ const NavBar = (props: {
         }
       }
     })
+
+    sliderContainer.style.marginBottom = `${parentIconContainer.clientHeight}px`
   })
 
   createEffect(() => {
@@ -44,20 +47,22 @@ const NavBar = (props: {
       </div>
 
       {/* Container for icon buttons */}
-      <div ref={iconContainer}
-        class='bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
-          relative after:bg-brandRed after:absolute after:bottom-0 after:h-1
-          after:left-[var(--left-offset)] after:w-[var(--bar-width)] after:rounded after:duration-[250ms]'>
-        <For each={props.icons}>{(icon, idx) =>
-          <button
-            class={`w-full flex justify-center pb-4 pt-4 ${
-              currentTab() == idx()
-                ? 'text-black'
-                : 'text-white-500'
-            }`}
-            onClick={() => { swiper.slideTo(idx()) }}
-          ><img src={currentTab() == idx() ? icon[1] : icon[0]} class='contrast-75 h-6' /></button>
-        }</For>
+      <div ref={parentIconContainer} class='absolute w-full z-10 bottom-0'>
+        <div ref={iconContainer}
+          class='bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
+            relative after:bg-brandRed after:absolute after:bottom-0 after:h-1
+            after:left-[var(--left-offset)] after:w-[var(--bar-width)] after:rounded after:duration-[250ms]'>
+          <For each={props.icons}>{(icon, idx) =>
+            <button
+              class={`w-full flex justify-center pb-4 pt-4 ${
+                currentTab() == idx()
+                  ? 'text-black'
+                  : 'text-white-500'
+              }`}
+              onClick={() => { swiper.slideTo(idx()) }}
+            ><img src={currentTab() == idx() ? icon[1] : icon[0]} class='contrast-75 h-6' /></button>
+          }</For>
+        </div>
       </div>
     </section>
   )

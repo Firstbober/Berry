@@ -22,7 +22,11 @@ export const App = () => {
       ['/icons/remixicon/user-3-line.svg', '/icons/remixicon/user-3-fill.svg']
     ]}>
       <Home />
-      <Tab><h1>BBB</h1></Tab>
+      <Tab>
+        <section class='max-h-full h-full w-full relative flex flex-col flex-grow items-center pr-3 pl-3'>
+
+        </section>
+      </Tab>
       <Tab><h1>CCCC</h1></Tab>
     </NavBar>
 

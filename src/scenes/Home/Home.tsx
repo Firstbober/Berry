@@ -7,7 +7,7 @@ import { Tab, Tabs } from '../../ui/Tabs'
 
 import Invites from './Home/Invites'
 import Friends from './Home/Friends'
-import NavBar, { NavTab } from '../../ui/NavBar'
+import NavBar from '../../ui/NavBar'
 
 export const Home = () => {
   const [{ setLoadingScreen }] = useLoadingContext()
@@ -22,7 +22,7 @@ export const Home = () => {
       ['/icons/remixicon/chat-1-line.svg', '/icons/remixicon/chat-1-fill.svg'],
       ['/icons/remixicon/user-3-line.svg', '/icons/remixicon/user-3-fill.svg']
     ]}>
-      <NavTab>
+      <Tab>
         <section class='max-h-full h-full w-full relative flex flex-col flex-grow items-center pr-3 pl-3'>
           <section class='mt-6 w-full flex'>
             <input placeholder={'Search in friends and channels'}
@@ -40,9 +40,9 @@ export const Home = () => {
             <Invites />
           </Tabs>
         </section>
-      </NavTab>
-      <NavTab><h1>BBB</h1></NavTab>
-      <NavTab><h1>CCCC</h1></NavTab>
+      </Tab>
+      <Tab><h1>BBB</h1></Tab>
+      <Tab><h1>CCCC</h1></Tab>
     </NavBar>
 
   </main>

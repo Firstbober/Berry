@@ -2,8 +2,8 @@ import { Component, createSignal, onMount } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
 // External
-import 'keen-slider/keen-slider.min.css'
-import KeenSlider, { KeenSliderInstance } from 'keen-slider'
+import Swiper from 'swiper'
+import 'swiper/css'
 
 // Components
 // import { CreateAccount } from './CreateAccount'
@@ -20,7 +20,7 @@ import { useLoadingContext } from '../../App'
 
 const Welcome: Component = () => {
   let sectionSlider: HTMLDivElement
-  let keenSlider: KeenSliderInstance
+  let swiper: Swiper
 
   const [errorMessage, setErrorMessage] = createSignal('')
   const [providerInfo, setProviderInfo] = createSignal({} as ProviderInfo)
@@ -30,10 +30,9 @@ const Welcome: Component = () => {
   const [{ setLoadingScreen }] = useLoadingContext()
 
   onMount(() => {
-    keenSlider = new KeenSlider(
-      sectionSlider, {
-        drag: false
-      })
+    swiper = new Swiper(sectionSlider, {
+      allowTouchMove: false
+    })
 
     setLoadingScreen(false)
   })
@@ -58,80 +57,82 @@ const Welcome: Component = () => {
   return <main class="w-full h-full bg-blue-600 flex lg:justify-center lg:items-center lg:bg-welcomeHeroLight lg:bg-cover">
     <section class="w-full h-full bg-white dark:bg-black text-black dark:text-white
       lg:w-1/2 lg:h-4/5 xl:w-1/3 lg:rounded lg:shadow-lg lg:mb-12">
-      <div ref={sectionSlider} class="keen-slider h-full">
-        <Slide>
-          <img src="/images/logos/logo.svg" alt="Berry Logo" class="w-48 mb-2 lg:w-36" />
-          <Header title={'Berry'} />
+      <div ref={sectionSlider} class="h-full overflow-hidden">
+        <div class='swiper-wrapper'>
+          <Slide>
+            <img src="/images/logos/logo.svg" alt="Berry Logo" class="w-48 mb-2 lg:w-36" />
+            <Header title={'Berry'} />
 
-          <p class="text-center text-lg text-gray-600">
-            Your <b class="font-semibold">decentralized</b> chat with world-class
-            <b class="font-semibold"> security</b> and unrivaled <b class="font-semibold">privacy</b>.
-          </p>
+            <p class="text-center text-lg text-gray-600">
+              Your <b class="font-semibold">decentralized</b> chat with world-class
+              <b class="font-semibold"> security</b> and unrivaled <b class="font-semibold">privacy</b>.
+            </p>
 
-          <ActionButton onClick={() => keenSlider.moveToIdx(1)} text={"Let's Get Started"} className="mt-auto" />
-        </Slide>
+            <ActionButton onClick={() => swiper.slideTo(1)} text={"Let's Get Started"} className="mt-auto" />
+          </Slide>
 
-        <ServerSelect onNext={async (domain) => {
-          setLastSlide(1)
-          keenSlider.moveToIdx(3)
+          <ServerSelect onNext={async (domain) => {
+            setLastSlide(1)
+            swiper.slideTo(3)
 
-          const res = await client.validateDomain(domain)
+            const res = await client.validateDomain(domain)
 
-          if (res.ok == false) {
-            keenSlider.moveToIdx(2)
+            if (res.ok == false) {
+              swiper.slideTo(2)
 
-            // TODO: Errors here should be in some array or object maybe
-            // so they can be easily edited/translated in the future.
-            return handleErrorMessages(res.error)
-          }
+              // TODO: Errors here should be in some array or object maybe
+              // so they can be easily edited/translated in the future.
+              return handleErrorMessages(res.error)
+            }
 
-          setProviderInfo(res.value)
-          const flows = await client.account.loginGetFlows(res.value.homeserver)
+            setProviderInfo(res.value)
+            const flows = await client.account.loginGetFlows(res.value.homeserver)
 
-          if (flows.ok == false) {
-            keenSlider.moveToIdx(2)
-            return handleErrorMessages(flows.error)
-          }
+            if (flows.ok == false) {
+              swiper.slideTo(2)
+              return handleErrorMessages(flows.error)
+            }
 
-          if (!flows.value.includes('m.login.password')) {
-            keenSlider.moveToIdx(2)
-            return handleErrorMessages({ type: ErrorType.Unsupported })
-          }
+            if (!flows.value.includes('m.login.password')) {
+              swiper.slideTo(2)
+              return handleErrorMessages({ type: ErrorType.Unsupported })
+            }
 
-          setLastSlide(4)
-          keenSlider.moveToIdx(4)
-        }} />
+            setLastSlide(4)
+            swiper.slideTo(4)
+          }} />
 
-        <Error message={errorMessage()} onBack={() => keenSlider.moveToIdx(lastSlide())} />
-        <Slide>
-          <img src="/images/logos/logo.svg" alt="Berry Logo" class="w-36 mb-auto mt-auto lg:w-28 animate-pulse" />
-        </Slide>
+          <Error message={errorMessage()} onBack={() => swiper.slideTo(lastSlide())} />
+          <Slide>
+            <img src="/images/logos/logo.svg" alt="Berry Logo" class="w-36 mb-auto mt-auto lg:w-28 animate-pulse" />
+          </Slide>
 
-        {/* TODO Somewhere here we will prompt user for their preffered log in method
-          (https://spec.matrix.org/v1.5/client-server-api/#authentication-types) */}
+          {/* TODO Somewhere here we will prompt user for their preffered log in method
+            (https://spec.matrix.org/v1.5/client-server-api/#authentication-types) */}
 
-        <AuthLoginPassword
-          onBack={() => keenSlider.moveToIdx(1)}
-          onNext={(username, password) => {
-            // Authentication flow for login + password combo.
-            keenSlider.moveToIdx(3)
+          <AuthLoginPassword
+            onBack={() => swiper.slideTo(1)}
+            onNext={(username, password) => {
+              // Authentication flow for login + password combo.
+              swiper.slideTo(3)
 
-            client.account.loginPassword(providerInfo(), username, password).then((status) => {
-              if (status.ok == false) {
-                keenSlider.moveToIdx(2)
-                return handleErrorMessages(status.error)
-              }
+              client.account.loginPassword(providerInfo(), username, password).then((status) => {
+                if (status.ok == false) {
+                  swiper.slideTo(2)
+                  return handleErrorMessages(status.error)
+                }
 
-              setLoadingScreen(true)
-              navigate('/')
-            }).catch(() => null)
-          }}
-        />
+                setLoadingScreen(true)
+                navigate('/')
+              }).catch(() => null)
+            }}
+          />
 
-        {/* <CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
+          {/* <CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
 
-          Currently the registation is put on hold until the client is functional
-          enough */}
+            Currently the registation is put on hold until the client is functional
+            enough */}
+          </div>
       </div>
     </section>
   </main>

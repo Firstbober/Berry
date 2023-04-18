@@ -4,9 +4,11 @@ import isEmail from 'validator/es/lib/isEmail'
 
 export const Slide = (props: { children: JSX.Element }) => {
   return (
-    <div class="keen-slider__slide w-full h-full flex items-center p-8 pt-16 pb-16 flex-col
-  lg:p-12 lg:pt-10 lg:pb-10">
-      {children(() => props.children)}
+    <div class="swiper-slide">
+        <div class="w-full h-full flex items-center p-8 pt-16 pb-16 flex-col
+          lg:p-12 lg:pt-10 lg:pb-10">
+          {children(() => props.children)}
+        </div>
     </div>
   )
 }

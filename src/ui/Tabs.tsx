@@ -1,14 +1,14 @@
 import { For, JSX, createEffect, createSignal, onMount } from 'solid-js'
 
-import 'keen-slider/keen-slider.min.css'
-import KeenSlider, { KeenSliderInstance } from 'keen-slider'
+import Swiper from 'swiper'
+import 'swiper/css'
 
 /// Generic Tab component for wrapping all the classes required for smooth sailing with KeenSlider.
 export const Tab = (props: {
   children?: JSX.Element,
   className?: string
 }) => {
-  return <section class={`keen-slider__slide h-full w-full ${props.className ? props.className : ''}`}>
+  return <section class={`swiper-slide h-full w-full ${props.className ? props.className : ''}`}>
     {props.children}
   </section>
 }
@@ -27,23 +27,21 @@ export const Tabs = (props: {
     }
   }
 
-  const [currentTab, setCurrentTab] = createSignal({ v: 0, external: false })
+  const [currentTab, setCurrentTab] = createSignal(0)
 
   let labelContainer: HTMLDivElement
   let sliderContainer: HTMLDivElement
-  let keenSlider: KeenSliderInstance
+  let swiper: Swiper
 
   // Create KeenSlider instance and configure it.
   onMount(() => {
-    keenSlider = new KeenSlider(
-      sliderContainer, {
-        drag: true,
-        renderMode: 'performance'
+    swiper = new Swiper(sliderContainer, {
+      allowTouchMove: true,
+      on: {
+        activeIndexChange: () => {
+          setCurrentTab(swiper.activeIndex)
+        }
       }
-    )
-
-    keenSlider.on('slideChanged', () => {
-      if (keenSlider.track.details.abs != currentTab().v) { setCurrentTab({ v: keenSlider.track.details.abs, external: true }) }
     })
   })
 
@@ -51,12 +49,10 @@ export const Tabs = (props: {
   // an effect for the animations.
   if (props.labels) {
     createEffect(() => {
-      const currentLabel = labelContainer.children[currentTab().v] as HTMLElement
+      const currentLabel = labelContainer.children[currentTab()] as HTMLElement
 
       labelContainer.style.setProperty('--left-offset', `${currentLabel.offsetLeft}px`)
       labelContainer.style.setProperty('--bar-width', `${currentLabel.clientWidth}px`)
-
-      if (!currentTab().external) { keenSlider.moveToIdx(currentTab().v) }
     })
   }
 
@@ -70,17 +66,21 @@ export const Tabs = (props: {
         <For each={props.labels}>{(label, idx) =>
           <button
             class={`text-lg p-3 pl-6 pr-6 relative font-semibold ${
-              currentTab().v == idx()
+              currentTab() == idx()
                 ? 'text-black'
                 : 'text-white-500'
             }`}
-            onClick={[setCurrentTab, { v: idx(), external: false }]}
+            onClick={() => {
+              swiper.slideTo(idx())
+            }}
           >{label}</button>
         }</For>
       </div>
 
-      <div ref={sliderContainer} class='keen-slider h-full'>
-        {props.children}
+      <div ref={sliderContainer} class='w-full h-full overflow-hidden'>
+        <div class='swiper-wrapper'>
+          {props.children}
+        </div>
       </div>
     </section>
   )

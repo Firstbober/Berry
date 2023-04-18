@@ -68,7 +68,7 @@ const App: Component = () => {
           <Route path="/welcome" component={lazy(() => import('./scenes/Welcome/Welcome'))} />
 
           {/* Must always be last */}
-          <Route path="/" component={lazy(() => import('./scenes/Home/Home'))} />
+          <Route path="/" component={lazy(() => import('./scenes/Home/App'))} />
         </Routes>
       </LoadingContext.Provider>
     </div>

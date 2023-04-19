@@ -34,5 +34,7 @@ module.exports = {
       // NotoSans: ['Noto Sans', 'sans-serif']
     }
   },
-  plugins: []
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ]
 }

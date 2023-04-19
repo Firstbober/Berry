@@ -13,7 +13,6 @@ const NavBar = (props: {
   const [currentTab, setCurrentTab] = createSignal(0)
 
   let iconContainer: HTMLDivElement
-  let parentIconContainer: HTMLDivElement
   let sliderContainer: HTMLDivElement
   let swiper: Swiper
 
@@ -28,7 +27,7 @@ const NavBar = (props: {
       }
     })
 
-    sliderContainer.style.marginBottom = `${parentIconContainer.clientHeight}px`
+    sliderContainer.style.marginBottom = `calc(${iconContainer.clientHeight}px + ${window.getComputedStyle(iconContainer).marginBottom})`
   })
 
   createEffect(() => {
@@ -47,7 +46,7 @@ const NavBar = (props: {
       </div>
 
       {/* Container for icon buttons */}
-      <div ref={parentIconContainer} class='absolute w-full z-10 bottom-0'>
+      <div class='absolute w-full z-10 bottom-0'>
         <div ref={iconContainer}
           class='bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
             relative after:bg-brandRed after:absolute after:bottom-0 after:h-1

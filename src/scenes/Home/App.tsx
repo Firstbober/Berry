@@ -38,7 +38,7 @@ export const App = () => {
           </section>
 
           {/* Room list */}
-          <section class='flex h-full min-w-0 max-w-fit'>
+          <section class='flex flex-col h-full min-w-0 max-w-fit'>
             {/* Space name and setting */}
             <button class='flex p-2 pl-4 pr-4 min-w-0 items-center h-14 border-b border-white-300'>
               <span class='overflow-hidden overflow-ellipsis whitespace-nowrap max-w-full
@@ -50,8 +50,15 @@ export const App = () => {
             </button>
 
             {/* Rooms */}
-            <section>
-
+            <section class='p-2 overflow-y-auto'>
+              <For each={new Array(30)}>{() =>
+                // Room
+                <button class='rounded flex w-full p-2 pl-2 pr-2 items-center'>
+                  <img src="/icons/remixicon/hashtag.svg" alt="Room icon"
+                    class='w-6 h-6 mr-1.5 contrast-75' />
+                  <span class='overflow-hidden overflow-ellipsis whitespace-nowrap mb-0.5'>Powerful testing room for incredible client</span>
+                </button>
+              }</For>
             </section>
           </section>
         </section>

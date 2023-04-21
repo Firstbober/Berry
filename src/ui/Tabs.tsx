@@ -13,10 +13,23 @@ export const Tab = (props: {
   </section>
 }
 
+interface TabsController {
+  moveToIdx: (idx: number) => void,
+  currentTab: () => number
+}
+
+export const useTabsController = (): TabsController => {
+  return {
+    moveToIdx: (idx: number) => { return idx },
+    currentTab: () => { return -1 }
+  }
+}
+
 /// Tabulated component which handles animations and tab changes with KeenSlider.
 export const Tabs = (props: {
   labels?: string[],
   className?: string,
+  controller?: TabsController,
 
   children: JSX.Element[]
 }) => {
@@ -43,6 +56,15 @@ export const Tabs = (props: {
         }
       }
     })
+
+    if (props.controller) {
+      props.controller.moveToIdx = (idx) => {
+        swiper.slideTo(idx)
+      }
+      props.controller.currentTab = () => {
+        return currentTab()
+      }
+    }
   })
 
   // As we allow the labels to not be renderer, we don't need to make

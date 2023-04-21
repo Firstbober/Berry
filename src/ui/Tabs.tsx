@@ -31,6 +31,8 @@ export const Tabs = (props: {
   className?: string,
   controller?: TabsController,
 
+  onTabChange?: (idx: number) => void,
+
   children: JSX.Element[]
 }) => {
   // We need to check if the amount of labels is synonymous with the amount of tabs.
@@ -53,6 +55,7 @@ export const Tabs = (props: {
       on: {
         activeIndexChange: () => {
           setCurrentTab(swiper.activeIndex)
+          if (props.onTabChange) { props.onTabChange(swiper.activeIndex) }
         }
       }
     })

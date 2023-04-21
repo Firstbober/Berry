@@ -67,7 +67,7 @@ const NavBar = (props: {
 
   return (
     <section class={`w-full h-full flex flex-col ${props.className ? props.className : ''}`}>
-      <div ref={sliderContainer} class='w-full h-full overflow-hidden'>
+      <div ref={sliderContainer} class='w-full h-full overflow-hidden duration-300'>
         <div class='swiper-wrapper'>
           {props.children}
         </div>

@@ -3,14 +3,26 @@ import { For, JSX, createEffect, createSignal, onMount } from 'solid-js'
 import Swiper from 'swiper'
 import 'swiper/css'
 
+export interface NavBarController {
+  toggleNavBar: (value: boolean) => void
+}
+
+export const useNavBarController = (): NavBarController => {
+  return {
+    toggleNavBar: () => null
+  }
+}
+
 /// Tabulated component which handles animations and tab changes with KeenSlider.
 const NavBar = (props: {
   icons: [string, string][],
   className?: string,
+  controller?: NavBarController,
 
   children: JSX.Element[]
 }) => {
   const [currentTab, setCurrentTab] = createSignal(0)
+  const [navBarVisible, setNavBarVisible] = createSignal(true)
 
   let iconContainer: HTMLDivElement
   let sliderContainer: HTMLDivElement
@@ -27,7 +39,23 @@ const NavBar = (props: {
       }
     })
 
-    sliderContainer.style.marginBottom = `calc(${iconContainer.clientHeight}px + ${window.getComputedStyle(iconContainer).marginBottom})`
+    const calculateMargin = () => {
+      sliderContainer.style.marginBottom = `calc(${iconContainer.clientHeight}px + ${window.getComputedStyle(iconContainer).marginBottom})`
+    }
+
+    if (props.controller) {
+      props.controller.toggleNavBar = (value) => {
+        setNavBarVisible(value)
+
+        if (value) {
+          calculateMargin()
+        } else {
+          sliderContainer.style.marginBottom = '0px'
+        }
+      }
+    }
+
+    calculateMargin()
   })
 
   createEffect(() => {
@@ -46,11 +74,13 @@ const NavBar = (props: {
       </div>
 
       {/* Container for icon buttons */}
-      <div class='absolute w-full z-10 bottom-0'>
+      <div class='absolute w-full z-10 bottom-0 overflow-hidden'>
         <div ref={iconContainer}
-          class='bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
+          class={`bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
             relative after:bg-brandRed after:absolute after:bottom-0 after:h-1
-            after:left-[var(--left-offset)] after:w-[var(--bar-width)] after:rounded after:duration-[250ms]'>
+            after:left-[var(--left-offset)] after:w-[var(--bar-width)] after:rounded after:duration-[250ms]
+            duration-300
+            ${navBarVisible() ? 'translate-y-0' : 'translate-y-[150%]'}`}>
           <For each={props.icons}>{(icon, idx) =>
             <button
               class={`w-full flex justify-center pb-4 pt-4 ${

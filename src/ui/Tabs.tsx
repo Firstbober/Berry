@@ -13,15 +13,15 @@ export const Tab = (props: {
   </section>
 }
 
-interface TabsController {
+export interface TabsController {
   moveToIdx: (idx: number) => void,
   currentTab: () => number
 }
 
 export const useTabsController = (): TabsController => {
   return {
-    moveToIdx: (idx: number) => { return idx },
-    currentTab: () => { return -1 }
+    moveToIdx: () => null,
+    currentTab: () => null
   }
 }
 

@@ -61,6 +61,48 @@ const Messages = (props: {
         <Tabs controller={tabsController} onTabChange={(idx) => {
           props.navBarController.toggleNavBar(idx == 0)
         }}>
+          <Tab className='flex flex-col pt-2 pb-2'>
+            {/* New user message */}
+            <div class='flex p-3 pt-1 pb-1 hover:bg-white-100'>
+              <section class='flex w-12 h-12 flex-shrink-0 mr-3'>
+                <img src="https://picsum.photos/200" alt="Avatar" class='w-12 h-12 object-cover rounded' />
+              </section>
+              <section>
+                <div class='font-semibold before:-mt-1 before:table items-center'>
+                  <div class='flex items-center'>
+                    <span>Joe Null</span>
+                    <span class='text-xs ml-2 font-normal text-white-600 mt-0.5'>Today at 14:00</span>
+                  </div>
+                </div>
+                <div>
+                  As my memory rests, but never forgets what I lost, wake mu up when september ends.
+                  As my memory rests, but never forgets what I lost, wake mu up when september ends.
+                  As my memory rests, but never forgets what I lost, wake mu up when september ends.
+                </div>
+              </section>
+            </div>
+            {/* Subsequent message of the same user */}
+            <div class='flex p-3 pt-1 pb-1 hover:bg-white-100 group'>
+              <section class='flex w-12 flex-shrink-0 mr-3 justify-center items-center'>
+                <span class='after:table after:mb-1 text-xs text-white-600 opacity-0 group-hover:opacity-100'>14:02</span>
+              </section>
+              <section>
+                <div class='before:-mt-1 before:table'>
+                  Summer has come and passed, the innocent can never last
+                </div>
+              </section>
+            </div>
+            <div class='flex p-3 pt-1 pb-1 hover:bg-white-100 group'>
+              <section class='flex w-12 flex-shrink-0 mr-3 justify-center items-center'>
+                <span class='after:table text-xs text-white-600 opacity-0 group-hover:opacity-100'>14:02</span>
+              </section>
+              <section>
+                <div class='before:-mt-1 before:table'>
+                  Summer has come and passed, the innocent can never last
+                </div>
+              </section>
+            </div>
+          </Tab>
           <Tab>
             <section class='max-h-full h-full w-full relative flex items-center'>
               {/* Spaces bar */}
@@ -74,11 +116,6 @@ const Messages = (props: {
                 }}
               />
             </section>
-          </Tab>
-
-          <Tab>
-            <h1>Messages</h1>
-            <div class='bg-red-500 w-full h-full'></div>
           </Tab>
         </Tabs>
     </Tab>

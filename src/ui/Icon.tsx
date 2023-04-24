@@ -11,7 +11,8 @@ export enum Icons {
   Search_Line = '/icons/remixicon/search-line.svg',
   SendPlane2_Fill = '/icons/remixicon/send-plane-2-fill.svg',
   User3_Fill = '/icons/remixicon/user-3-fill.svg',
-  User3_Line = '/icons/remixicon/user-3-line.svg'
+  User3_Line = '/icons/remixicon/user-3-line.svg',
+  Menu_Fill = '/icons/remixicon/menu-line.svg'
 }
 
 export const Icon = (props: {

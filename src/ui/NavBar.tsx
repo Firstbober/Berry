@@ -25,6 +25,7 @@ const NavBar = (props: {
   const [navBarVisible, setNavBarVisible] = createSignal(true)
 
   let iconContainer: HTMLDivElement
+  let absoluteIconContainer: HTMLDivElement
   let sliderContainer: HTMLDivElement
   let swiper: Swiper
 
@@ -65,6 +66,20 @@ const NavBar = (props: {
     iconContainer.style.setProperty('--bar-width', `${currentLabel.clientWidth}px`)
   })
 
+  createEffect(() => {
+    if (navBarVisible()) {
+      absoluteIconContainer.style.display = 'block'
+      setTimeout(() => {
+        iconContainer.style.transform = 'translate(0%, 0%)'
+      }, 10)
+    } else {
+      iconContainer.style.transform = 'translate(0%, 150%)'
+      setTimeout(() => {
+        absoluteIconContainer.style.display = 'none'
+      }, 300)
+    }
+  })
+
   return (
     <section class={`w-full h-full flex flex-col ${props.className ? props.className : ''}`}>
       <div ref={sliderContainer} class='w-full h-full overflow-hidden duration-300'>
@@ -74,13 +89,12 @@ const NavBar = (props: {
       </div>
 
       {/* Container for icon buttons */}
-      <div class='absolute w-full z-10 bottom-0 overflow-hidden'>
+      <div ref={absoluteIconContainer} class='absolute w-full z-10 bottom-0 overflow-hidden'>
         <div ref={iconContainer}
           class={`bg-white-100 m-3 mb-4 flex justify-evenly rounded-md shadow-md
             relative after:bg-brandRed after:absolute after:bottom-0 after:h-1
             after:left-[var(--left-offset)] after:w-[var(--bar-width)] after:rounded after:duration-[250ms]
-            duration-300
-            ${navBarVisible() ? 'translate-y-0' : 'translate-y-[150%]'}`}>
+            duration-300`}>
           <For each={props.icons}>{(icon, idx) =>
             <button
               class={`w-full flex justify-center pb-4 pt-4 ${

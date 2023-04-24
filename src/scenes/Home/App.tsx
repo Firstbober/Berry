@@ -1,6 +1,6 @@
 /* @refresh reload */
 
-import { For, Show, onMount } from 'solid-js'
+import { onMount } from 'solid-js'
 
 import { useLoadingContext } from '../../App'
 import { Tab } from '../../ui/Tabs'

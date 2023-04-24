@@ -1,6 +1,7 @@
 import { For } from 'solid-js'
 import { Tab, Tabs, useTabsController } from '../../../ui/Tabs'
 import { NavBarController } from '../../../ui/NavBar'
+import { Icon, Icons } from '../../../ui/Icon'
 
 const Spaces = () => {
   return (
@@ -30,8 +31,7 @@ const Rooms = (props: {
         <span class='overflow-hidden overflow-ellipsis whitespace-nowrap max-w-full
           font-semibold text-lg'>Berry Matrix Client: Rayman Origins: Electic Boogaloo 2</span>
         <div class='grow flex w-12 h-full items-center justify-center ml-6'>
-          <img src="/icons/remixicon/more-fill.svg" alt="Show space info and settings"
-            class='w-6 h-6' />
+          <Icon src={Icons.More_Fill} alt="Show space info and settings" className='w-6 h-6' />
         </div>
       </button>
 
@@ -41,8 +41,7 @@ const Rooms = (props: {
           // Room
           <button class='rounded flex w-full p-2 pl-2 pr-2 items-center\
             hover:bg-white-100 duration-75' onClick={() => props.onRoomSwitch()}>
-            <img src="/icons/remixicon/hashtag.svg" alt="Room icon"
-              class='w-6 h-6 mr-1.5 contrast-75' />
+            <Icon src={Icons.Hashtag} alt="Room icon" className='w-6 h-6 mr-1.5' />
             <span class='overflow-hidden overflow-ellipsis whitespace-nowrap mb-0.5'>Powerful testing room for incredible client</span>
           </button>
         }</For>
@@ -129,7 +128,7 @@ const Chat = () => {
                 target.style.height = `${target.scrollHeight}px`
               }} />
             <button class='w-8 h-10 mt-auto ml-2'>
-              <img src="/icons/remixicon/send-plane-2-fill.svg" alt="Send icon" class='contrast-75' />
+              <Icon src={Icons.SendPlane2_Fill} alt="Send message" />
             </button>
         </section>
       </div>

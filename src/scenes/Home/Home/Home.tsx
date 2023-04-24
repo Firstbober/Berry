@@ -1,3 +1,4 @@
+import { Icon, Icons } from '../../../ui/Icon'
 import { Tab, Tabs } from '../../../ui/Tabs'
 import Friends from './Friends'
 import Invites from './Invites'
@@ -11,9 +12,15 @@ const Home = () => {
             class={'rounded bg-white-200 text-white-700 placeholder-white-500 bg-none p-2 lg:p-2 lg:roun outline-none border-2 border-white-200 w-full'}
           />
           <div class='flex ml-2 rounded'>
-            <button class='flex items-center justify-center'><img src="/icons/remixicon/search-line.svg" class='contrast-75 w-7 h-7 mr-6 ml-6' /></button>
-            <button class='flex items-center justify-center'><img src="/icons/remixicon/add-line.svg" class='contrast-75 w-7 h-7 mr-6 ml-6' /></button>
-            <button class='flex items-center justify-center '><img src="/icons/remixicon/compass-3-line.svg" class='contrast-75 w-7 h-7 mr-6 ml-6' /></button>
+            <button class='flex items-center justify-center'>
+              <Icon src={Icons.Search_Line} alt="Search" className='w-7 h-7 mr-6 ml-6' />
+            </button>
+            <button class='flex items-center justify-center'>
+              <Icon src={Icons.AddLine} alt="Search" className='w-7 h-7 mr-6 ml-6' />
+            </button>
+            <button class='flex items-center justify-center '>
+              <Icon src={Icons.Compass3_Line} alt="Search" className='w-7 h-7 mr-6 ml-6' />
+            </button>
           </div>
         </section>
 

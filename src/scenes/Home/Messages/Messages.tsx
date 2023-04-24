@@ -25,7 +25,7 @@ const Rooms = (props: {
   return (
     <section class='flex flex-col h-full min-w-0 max-w-fit'>
       {/* Space name and setting */}
-      <button class='flex p-2 pl-4 pr-4 min-w-0 items-center h-16 border-b border-white-300
+      <button class='flex p-2 pl-4 pr-4 min-w-0 items-center min-h-[2.75rem] max-h-11 border-b border-white-300
         hover:bg-white-100 duration-100'>
         <span class='overflow-hidden overflow-ellipsis whitespace-nowrap max-w-full
           font-semibold text-lg'>Berry Matrix Client: Rayman Origins: Electic Boogaloo 2</span>
@@ -59,8 +59,8 @@ const Chat = () => {
         <section class='w-full h-full pt-2 pb-2 overflow-auto'>
           {/* New user message */}
           <div class='flex p-3 pt-1 pb-1 hover:bg-white-100'>
-            <section class='flex w-12 h-12 flex-shrink-0 mr-3'>
-              <img src="https://picsum.photos/200" alt="Avatar" class='w-12 h-12 object-cover rounded' />
+            <section class='flex w-11 h-11 flex-shrink-0 mr-3'>
+              <img src="https://picsum.photos/200" alt="Avatar" class='w-11 h-11 object-cover rounded' />
             </section>
             <section>
               <div class='font-semibold before:-mt-1 before:table items-center'>
@@ -78,7 +78,7 @@ const Chat = () => {
           </div>
           {/* Subsequent message of the same user */}
           <div class='flex p-3 pt-1 pb-1 hover:bg-white-100 group'>
-            <section class='flex w-12 flex-shrink-0 mr-3 justify-center items-center'>
+            <section class='flex w-11 flex-shrink-0 mr-3 justify-center items-center'>
               <span class='after:table after:mb-1 text-xs text-white-600 opacity-0 group-hover:opacity-100'>14:02</span>
             </section>
             <section>
@@ -88,7 +88,7 @@ const Chat = () => {
             </section>
           </div>
           <div class='flex p-3 pt-1 pb-1 hover:bg-white-100 group'>
-            <section class='flex w-12 flex-shrink-0 mr-3 justify-center items-center'>
+            <section class='flex w-11 flex-shrink-0 mr-3 justify-center items-center'>
               <span class='after:table text-xs text-white-600 opacity-0 group-hover:opacity-100'>14:02</span>
             </section>
             <section>
@@ -97,14 +97,39 @@ const Chat = () => {
               </div>
             </section>
           </div>
+
+          <For each={new Array(10)}>{(_, __) =>
+            <div class='flex p-3 pt-1 pb-1 hover:bg-white-100 group'>
+              <section class='flex w-11 flex-shrink-0 mr-3 justify-center items-center'>
+                <span class='after:table text-xs text-white-600 opacity-0 group-hover:opacity-100'>14:02</span>
+              </section>
+              <section>
+                <div class='before:-mt-1 before:table'>
+                  Summer has come and passed, the innocent can never last
+                </div>
+              </section>
+            </div>
+          }</For>
         </section>
 
         {/* Input */}
-        <section class='w-full flex-shrink-0 flex bg-white-100 items-center pl-4 pr-4'>
+        <section class='w-full flex-shrink-0 flex bg-white-100 items-center p-2 pl-3 pr-3'>
             <textarea placeholder='Write a message...'
-              class='w-full bg-transparent overflow-visible' />
-            <button class='w-8 h-8'>
-              <img src="/icons/remixicon/send-plane-2-fill.svg" alt="Send icon" />
+              class='w-full bg-transparent overflow-visible h-10 mt-auto outline-none pt-1.5 resize-none'
+              onInput={(ev) => {
+                const target = ev.target as HTMLTextAreaElement
+
+                if (target.style.height.includes(String(target.scrollHeight))) {
+                  target.style.paddingBottom = '0.375rem'
+                } else {
+                  target.style.paddingBottom = ''
+                }
+
+                target.style.height = ''
+                target.style.height = `${target.scrollHeight}px`
+              }} />
+            <button class='w-8 h-10 mt-auto ml-2'>
+              <img src="/icons/remixicon/send-plane-2-fill.svg" alt="Send icon" class='contrast-75' />
             </button>
         </section>
       </div>

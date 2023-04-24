@@ -1,5 +1,5 @@
 import { For } from 'solid-js'
-import { Tab, Tabs, useTabsController } from '../../../ui/Tabs'
+import { Tab, Tabs, TabsController, useTabsController } from '../../../ui/Tabs'
 import { NavBarController } from '../../../ui/NavBar'
 import { Icon, Icons } from '../../../ui/Icon'
 
@@ -26,7 +26,7 @@ const Rooms = (props: {
   return (
     <section class='flex flex-col h-full min-w-0 max-w-fit'>
       {/* Space name and setting */}
-      <button class='flex p-2 pl-4 pr-4 min-w-0 items-center min-h-[2.75rem] max-h-11 border-b border-white-300
+      <button class='flex p-2 pl-4 pr-4 min-w-0 items-center min-h-[3rem] max-h-12 border-b border-white-300
         hover:bg-white-100 duration-100'>
         <span class='overflow-hidden overflow-ellipsis whitespace-nowrap max-w-full
           font-semibold text-lg'>Berry Matrix Client: Rayman Origins: Electic Boogaloo 2</span>
@@ -39,7 +39,7 @@ const Rooms = (props: {
       <section class='p-2 overflow-y-auto'>
         <For each={new Array(30)}>{() =>
           // Room
-          <button class='rounded flex w-full p-2 pl-2 pr-2 items-center\
+          <button class='rounded flex w-full p-2 pl-2 pr-2 items-center
             hover:bg-white-100 duration-75' onClick={() => props.onRoomSwitch()}>
             <Icon src={Icons.Hashtag} alt="Room icon" className='w-6 h-6 mr-1.5' />
             <span class='overflow-hidden overflow-ellipsis whitespace-nowrap mb-0.5'>Powerful testing room for incredible client</span>
@@ -50,10 +50,27 @@ const Rooms = (props: {
   )
 }
 
-const Chat = () => {
+const Chat = (props: {
+  controller: TabsController
+}) => {
   return (
-    <Tab>
+    <Tab >
       <div class='flex flex-col w-full h-full'>
+        {/* Room info */}
+        <span class='flex min-w-0 items-center min-h-[3rem] max-h-12 border-b border-white-300
+        duration-100 pr-4'>
+          <button class='flex items-center justify-center w-[4.25rem] h-full'
+            onClick={() => {
+              props.controller.moveToIdx(0)
+            }}>
+            <Icon src={Icons.ArrowLeft_Line} alt='Spaces and room selection' className='w-6 h-6' />
+          </button>
+          <button class='flex items-center min-w-0'>
+            <span class='overflow-hidden overflow-ellipsis whitespace-nowrap mb-0.5 text-lg font-semibold
+              text-white-700'>Powerful testing room for incredible client</span>
+          </button>
+        </span>
+
         {/* Messages */}
         <section class='w-full h-full pt-2 pb-2 overflow-auto'>
           {/* New user message */}
@@ -147,7 +164,7 @@ const Messages = (props: {
           props.navBarController.toggleNavBar(idx == 0)
         }}>
           <Tab>
-            <section class='max-h-full h-full w-full relative flex items-center'>
+            <section class='max-h-full h-full w-full relative flex items-center border-r border-white-400'>
               {/* Spaces bar */}
               <Spaces />
 
@@ -160,7 +177,7 @@ const Messages = (props: {
               />
             </section>
           </Tab>
-          <Chat />
+          <Chat controller={tabsController} />
         </Tabs>
     </Tab>
   )

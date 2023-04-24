@@ -24,8 +24,8 @@ export const App = () => {
       ['/icons/remixicon/chat-1-line.svg', '/icons/remixicon/chat-1-fill.svg'],
       ['/icons/remixicon/user-3-line.svg', '/icons/remixicon/user-3-fill.svg']
     ]} controller={navBarController}>
-      <Messages navBarController={navBarController} />
       <Home />
+      <Messages navBarController={navBarController} />
       <Settings />
     </NavBar>
 

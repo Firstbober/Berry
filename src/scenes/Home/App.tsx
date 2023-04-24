@@ -8,6 +8,7 @@ import { Tab } from '../../ui/Tabs'
 import NavBar, { useNavBarController } from '../../ui/NavBar'
 import Home from './Home/Home'
 import Messages from './Messages/Messages'
+import Settings from './Settings/Settings'
 
 export const App = () => {
   const [{ setLoadingScreen }] = useLoadingContext()
@@ -25,7 +26,7 @@ export const App = () => {
     ]} controller={navBarController}>
       <Messages navBarController={navBarController} />
       <Home />
-      <Tab><h1>CCCC</h1></Tab>
+      <Settings />
     </NavBar>
 
   </main>

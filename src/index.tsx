@@ -6,6 +6,7 @@ import { Router } from '@solidjs/router'
 
 import '@fontsource/sarabun/400.css'
 import '@fontsource/sarabun/600.css'
+import '@fontsource/sarabun/500.css'
 import '@fontsource/sarabun/800.css'
 
 // import "@fontsource/noto-sans"

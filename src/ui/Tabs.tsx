@@ -6,9 +6,10 @@ import 'swiper/css'
 /// Generic Tab component for wrapping all the classes required for smooth sailing with KeenSlider.
 export const Tab = (props: {
   children?: JSX.Element,
-  className?: string
+  className?: string,
+  disableSlide?: boolean
 }) => {
-  return <section class={`swiper-slide h-full w-full ${props.className ? props.className : ''}`}>
+  return <section class={`${[props.disableSlide ? '' : 'swiper-slide']} h-full w-full ${props.className ? props.className : ''}`}>
     {props.children}
   </section>
 }

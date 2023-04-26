@@ -15,7 +15,7 @@ const Messages = (props: {
   // Cross-screen side bar
   const SideBar = () => {
     return (
-      <Tab className='w-fit' disableSlide={isScreenLG()}>
+      <Tab className='lg:w-min' disableSlide={isScreenLG()}>
         <section class='max-h-full h-full w-full lg:w-fit relative flex items-center border-r border-white-400'>
           {/* Spaces bar */}
           <Spaces />

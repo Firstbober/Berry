@@ -53,6 +53,7 @@ export const Tabs = (props: {
   onMount(() => {
     swiper = new Swiper(sliderContainer, {
       allowTouchMove: true,
+      slidesPerView: 'auto',
       on: {
         activeIndexChange: () => {
           setCurrentTab(swiper.activeIndex)
@@ -83,7 +84,7 @@ export const Tabs = (props: {
   }
 
   return (
-    <section class={`w-full h-full flex flex-col ${props.className ? props.className : ''}`}>
+    <section class={`w-full h-full flex flex-col max-w-full ${props.className ? props.className : ''}`}>
       {/* Container for label buttons */}
       <div ref={labelContainer}
         class='relative after:bg-brandRed after:absolute after:bottom-0 after:h-0.5
@@ -103,8 +104,8 @@ export const Tabs = (props: {
         }</For>
       </div>
 
-      <div ref={sliderContainer} class='w-full h-full overflow-hidden'>
-        <div class='swiper-wrapper'>
+      <div ref={sliderContainer} class='h-full overflow-hidden min-w-0 max-w-full'>
+        <div class='swiper-wrapper min-w-0 max-w-full'>
           {props.children}
         </div>
       </div>

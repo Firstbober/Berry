@@ -1,11 +1,14 @@
+import { createMediaQuery } from '@solid-primitives/media'
 import { Icon, Icons } from '../../../ui/Icon'
 import { Tab, Tabs } from '../../../ui/Tabs'
 import Friends from './Friends'
 import Invites from './Invites'
 
 const Home = () => {
+  const isScreenLG = createMediaQuery('(min-width: 1024px)')
+
   return (
-    <Tab>
+    <Tab disableSlide={isScreenLG()}>
       <section class='max-h-full h-full w-full relative flex flex-col flex-grow items-center pr-3 pl-3'>
         <section class='mt-6 w-full flex'>
           <input placeholder={'Search in friends and channels'}

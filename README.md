@@ -6,6 +6,11 @@ Web [matrix](https://matrix.org/) client with good UI and PWA support for mobile
 
 Currently, Berry is in very incomplete state with only initial welcoming screen in working state and main part of the app in works.
 
+## Screenshots
+<p align="center">
+  <img width="auto" src="https://raw.githubusercontent.com/Firstbober/Berry/master/screenshots/welcome.webp">
+</p>
+
 ## Usage
 
 ```bash

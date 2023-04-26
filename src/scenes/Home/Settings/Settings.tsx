@@ -1,8 +1,11 @@
+import { createMediaQuery } from '@solid-primitives/media'
 import { Tab } from '../../../ui/Tabs'
 
 const Settings = () => {
+  const isScreenLG = createMediaQuery('(min-width: 1024px)')
+
   return (
-    <Tab>
+    <Tab disableSlide={isScreenLG()}>
       <section class='max-h-full h-full w-full flex flex-col flex-grow items-center justify-center pr-3 pl-3 pt-3'>
         <span class='text-xl font-semibold'>Username</span>
         <span>@username:homeserver.org</span>

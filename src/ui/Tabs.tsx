@@ -92,7 +92,7 @@ export const Tabs = (props: {
           h-min'>
         <For each={props.labels}>{(label, idx) =>
           <button
-            class={`text-lg p-3 pl-6 pr-6 relative font-semibold ${
+            class={`text-lg lg:text-base p-3 pl-6 pr-6 relative font-semibold ${
               currentTab() == idx()
                 ? 'text-black'
                 : 'text-white-500'

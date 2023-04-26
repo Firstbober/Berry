@@ -6,6 +6,7 @@ import Spaces from './Spaces'
 import Rooms from './Rooms'
 import Chat from './Chat'
 import Home from '../Home/Home'
+import Settings from '../Settings/Settings'
 
 const Messages = (props: {
   navBarController: NavBarController
@@ -16,21 +17,24 @@ const Messages = (props: {
 
   // Cross-screen side bar
   const SideBar = (p: {
-    onSpaceChange: (idx: number) => void
+    onSpaceChange: (idx: number) => void,
+    dontShowRooms?: boolean
   }) => {
     return (
       <Tab className='lg:w-min' disableSlide={isScreenLG()}>
-        <section class='max-h-full h-full w-full lg:w-fit relative flex items-center border-r border-white-400'>
+        <section class={`max-h-full h-full w-full lg:w-fit relative flex items-center border-r ${p.dontShowRooms ? '' : 'border-white-400'}`}>
           {/* Spaces bar */}
           <Spaces onSpaceChange={p.onSpaceChange} />
 
           {/* Room list */}
-          <Rooms
-            onRoomSwitch={() => {
-              props.navBarController.toggleNavBar(false)
-              tabsController.moveToIdx(1)
-            }}
-          />
+          <Show when={!p.dontShowRooms}>
+            <Rooms
+              onRoomSwitch={() => {
+                props.navBarController.toggleNavBar(false)
+                tabsController.moveToIdx(1)
+              }}
+            />
+          </Show>
         </section>
       </Tab>
     )
@@ -54,12 +58,16 @@ const Messages = (props: {
       <section class='flex w-full h-full'>
         <SideBar onSpaceChange={(idx) => {
           setCurrentSpace(idx)
-        }} />
+        }} dontShowRooms={currentSpace() < 0} />
 
         <Switch>
           <Match when={currentSpace() == 0 - 1}>
             <Home />
           </Match>
+          <Match when={currentSpace() == 0 - 2}>
+            <Settings />
+          </Match>
+
           <Match when={currentSpace() >= 0}>
             <Chat controller={tabsController} />
           </Match>

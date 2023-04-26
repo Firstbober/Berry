@@ -19,7 +19,7 @@ const Space = (props: {
           ? <div class={`bg-white-200 hover:bg-white-300
               rounded flex items-center justify-center duration-75 ${
                 props.active
-                  ? 'w-14 h-14 lg:w-12 lg:h-12 lg:min-w-[3rem]'
+                  ? 'w-14 h-14 lg:w-12 lg:h-12 lg:min-w-[3rem] bg-white-300'
                   : 'w-[3.2rem] h-[3.2rem] lg:w-11 lg:h-11'
               }`}>
             <Icon src={props.icon} alt="Icon" />
@@ -69,7 +69,10 @@ const Spaces = (props: {
       <Show when={isScreenLG()}>
         <Separator />
         <section>
-          <Space icon={Icons.User3_Fill} onClick={() => null} />
+          <Space icon={Icons.User3_Fill} onClick={() => {
+            props.onSpaceChange(0 - 2)
+            setCurrentSpace(0 - 2)
+          }} active={currentSpace() == 0 - 2} />
         </section>
       </Show>
     </section>

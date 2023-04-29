@@ -5,6 +5,7 @@ const parserOptions: ValidatorOptions = {
   mode: 'default',
   requireValidation: false,
   complexityChecks: true,
+  includeErrors: !import.meta.env.PROD,
   schemas: {
     AccountData: {
       properties: {
@@ -53,34 +54,6 @@ const parserOptions: ValidatorOptions = {
       required: ['content', 'type']
     },
 
-    EventContent: {
-      properties: {
-        avatar_url: {
-          type: 'string'
-        },
-        displayname: {
-          type: 'string'
-        },
-        is_direct: {
-          type: 'boolean'
-        },
-        join_authorised_via_users_server: {
-          type: 'string'
-        },
-        membership: {
-          type: 'string',
-          enum: ['invite', 'join', 'knock', 'leave', 'ban']
-        },
-        reason: {
-          type: 'string'
-        },
-        third_party_invite: {
-          $ref: 'Invite#'
-        }
-      },
-      required: ['membership']
-    },
-
     Invite: {
       properties: {
         display_name: {
@@ -117,7 +90,7 @@ const parserOptions: ValidatorOptions = {
               type: 'number'
             },
             prev_content: {
-              $ref: 'EventContent#'
+              type: 'object'
             },
             redacted_because: {
               $ref: 'ClientEventWithoutRoomID#'
@@ -135,7 +108,7 @@ const parserOptions: ValidatorOptions = {
     StrippedStateEvent: {
       properties: {
         content: {
-          $ref: 'EventContent#'
+          type: 'object'
         },
         sender: {
           type: 'string'
@@ -356,6 +329,8 @@ namespace schema {
     ]
   }, parserOptions)
 
+  // Account related
+
   export const GET_client_v3_login = schemasafeParser({
     $schema: 'http://json-schema.org/draft-07/schema#',
     properties: {
@@ -434,6 +409,24 @@ namespace schema {
       'user_id'
     ]
   }, parserOptions)
+
+  export const POST_client_v3_refresh = schemasafeParser({
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    properties: {
+      access_token: {
+        type: 'string'
+      },
+      expires_in_ms: {
+        type: 'number'
+      },
+      refresh_token: {
+        type: 'string'
+      }
+    },
+    required: ['access_token']
+  }, parserOptions)
+
+  // Events related
 
   export const GET_client_v3_sync = schemasafeParser({
     $schema: 'http://json-schema.org/draft-07/schema#',

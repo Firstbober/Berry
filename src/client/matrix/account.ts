@@ -1,5 +1,6 @@
 import { getClientDisplayName, matrixErrcode, mfetch } from '../common'
 import { Error, ErrorType } from '../error'
+import endpoints from './endpoints'
 import schema from './schema'
 
 /// Account class for encapsulating account related functions.
@@ -106,6 +107,28 @@ export class account {
         refreshToken: pres.value['refresh_token'],
         wellKnown_homeServer: homeServer,
         wellKnown_identityServer: identityServer
+      }
+    }
+  }
+
+  /// https://spec.matrix.org/v1.5/client-server-api/#post_matrixclientv3refresh
+  async refreshAccessToken (homeserver: string, refreshToken: string): AResult<{
+    access_token: string,
+    expires_in_ms?: number,
+    refresh_token?: string
+  }, Error> {
+    const res = await endpoints.POST_client_v3_refresh(homeserver, undefined, undefined, {
+      refresh_token: refreshToken
+    })
+
+    if (res.ok == false) return res
+
+    return {
+      ok: true,
+      value: {
+        access_token: res.value['access_token'],
+        expires_in_ms: res.value['expires_in_ms'],
+        refresh_token: res.value['refresh_token']
       }
     }
   }

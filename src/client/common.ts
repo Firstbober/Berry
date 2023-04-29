@@ -10,6 +10,7 @@ export async function mfetch (input: RequestInfo | URL, init?: RequestInit): ARe
   try {
     response = await fetch(input, init)
   } catch (error) {
+    console.error(error)
     return { ok: false, error: { type: ErrorType.Network } }
   }
 

@@ -9,6 +9,7 @@ export enum ErrorType {
 
   Unsupported,
   Internal,
+  InternalHTTP,
 
   InvalidToken,
   NoToken,
@@ -46,9 +47,13 @@ export type Error =
     type: ErrorType.Internal,
     reason?: string
   } |
+  {
+    type: ErrorType.InternalHTTP
+  } |
 
   {
     type: ErrorType.InvalidToken
+    soft_logout?: boolean
   } |
   {
     type: ErrorType.NoToken

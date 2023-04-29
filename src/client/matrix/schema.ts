@@ -346,6 +346,9 @@ namespace schema {
       },
       retry_after_ms: {
         type: 'number'
+      },
+      soft_logout: {
+        type: 'boolean'
       }
     },
     required: [

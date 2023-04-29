@@ -7,7 +7,6 @@ const parserOptions: ValidatorOptions = {
   complexityChecks: true,
   schemas: {
     AccountData: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
@@ -19,7 +18,6 @@ const parserOptions: ValidatorOptions = {
     },
 
     Presence: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
@@ -31,7 +29,6 @@ const parserOptions: ValidatorOptions = {
     },
 
     DeviceLists: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         changed: {
           type: 'array',
@@ -45,7 +42,6 @@ const parserOptions: ValidatorOptions = {
     },
 
     Event: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         content: {
           type: 'object'
@@ -58,7 +54,6 @@ const parserOptions: ValidatorOptions = {
     },
 
     EventContent: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         avatar_url: {
           type: 'string'
@@ -80,14 +75,13 @@ const parserOptions: ValidatorOptions = {
           type: 'string'
         },
         third_party_invite: {
-          type: 'Invite#'
+          $ref: 'Invite#'
         }
       },
       required: ['membership']
     },
 
     Invite: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         display_name: {
           type: 'string'
@@ -97,7 +91,6 @@ const parserOptions: ValidatorOptions = {
     },
 
     ClientEventWithoutRoomID: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         content: {
           type: 'object'
@@ -124,10 +117,10 @@ const parserOptions: ValidatorOptions = {
               type: 'number'
             },
             prev_content: {
-              type: 'EventContent#'
+              $ref: 'EventContent#'
             },
             redacted_because: {
-              type: 'ClientEventWithoutRoomID#'
+              $ref: 'ClientEventWithoutRoomID#'
             },
             transaction_id: {
               type: 'string'
@@ -140,10 +133,9 @@ const parserOptions: ValidatorOptions = {
     },
 
     StrippedStateEvent: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         content: {
-          type: 'EventContent#'
+          $ref: 'EventContent#'
         },
         sender: {
           type: 'string'
@@ -159,100 +151,92 @@ const parserOptions: ValidatorOptions = {
     },
 
     InviteState: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
-          items: { type: 'StrippedStateEvent#' }
+          items: { $ref: 'StrippedStateEvent#' }
         }
       }
     },
 
     InvitedRoom: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
-        invite_state: { type: 'InviteState#' }
+        invite_state: { $ref: 'InviteState#' }
       }
     },
     JoinedRoom: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         account_data: {
-          type: 'AccountData#'
+          $ref: 'AccountData#'
         },
         ephemeral: {
-          type: 'Ephemeral#'
+          $ref: 'Ephemeral#'
         },
         state: {
-          type: 'State#'
+          $ref: 'State#'
         },
         summary: {
-          type: 'RoomSummary#'
+          $ref: 'RoomSummary#'
         },
         timeline: {
-          type: 'Timeline#'
+          $ref: 'Timeline#'
         },
         unread_notifications: {
-          type: 'NotificationCounts#'
+          $ref: 'NotificationCounts#'
         },
         unread_thread_notifications: {
           type: 'object',
           patternProperties: {
-            '^.': { type: 'NotificationCounts#' }
+            '^.': { $ref: 'NotificationCounts#' }
           }
         }
       }
     },
     KnockedRoom: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         knock_state: {
           type: 'object',
           properties: {
             events: {
               type: 'array',
-              items: { type: 'StrippedStateEvent#' }
+              items: { $ref: 'StrippedStateEvent#' }
             }
           }
         }
       }
     },
     LeftRoom: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         account_data: {
-          type: 'AccountData#'
+          $ref: 'AccountData#'
         },
         state: {
-          type: 'State#'
+          $ref: 'State#'
         },
         timeline: {
-          type: 'Timeline#'
+          $ref: 'Timeline#'
         }
       }
     },
 
     Ephemeral: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
-          items: { type: 'Event#' }
+          items: { $ref: 'Event#' }
         }
       }
     },
 
     State: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
-          items: { type: 'ClientEventWithoutRoomID#' }
+          items: { $ref: 'ClientEventWithoutRoomID#' }
         }
       }
     },
     RoomSummary: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         'm.heroes': {
           type: 'array',
@@ -263,11 +247,10 @@ const parserOptions: ValidatorOptions = {
       }
     },
     Timeline: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
-          items: { type: 'ClientEventWithoutRoomID#' }
+          items: { $ref: 'ClientEventWithoutRoomID#' }
         },
         limited: {
           type: 'boolean'
@@ -279,7 +262,6 @@ const parserOptions: ValidatorOptions = {
       required: ['events']
     },
     NotificationCounts: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         highlight_count: { type: 'number' },
         notification_count: { type: 'number' }
@@ -287,11 +269,10 @@ const parserOptions: ValidatorOptions = {
     },
 
     ToDevice: {
-      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         events: {
           type: 'array',
-          items: { type: 'Event#' }
+          items: { $ref: 'Event#' }
         }
       }
     }
@@ -477,31 +458,31 @@ namespace schema {
           invite: {
             type: 'object',
             patternProperties: {
-              '^.': { type: 'InvitedRoom#' }
+              '^.': { $ref: 'InvitedRoom#' }
             }
           },
           join: {
             type: 'object',
             patternProperties: {
-              '^.': { type: 'JoinedRoom#' }
+              '^.': { $ref: 'JoinedRoom#' }
             }
           },
           knock: {
             type: 'object',
             patternProperties: {
-              '^.': { type: 'KnockedRoom#' }
+              '^.': { $ref: 'KnockedRoom#' }
             }
           },
           leave: {
             type: 'object',
             patternProperties: {
-              '^.': { type: 'LeftRoom#' }
+              '^.': { $ref: 'LeftRoom#' }
             }
           }
         }
       },
       to_device: {
-        type: 'ToDevice#'
+        $ref: 'ToDevice#'
       }
     },
     required: [

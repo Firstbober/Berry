@@ -34,7 +34,13 @@ const Welcome: Component = () => {
       allowTouchMove: false
     })
 
-    setLoadingScreen(false)
+    navigator.storage.persist().then((persistent) => {
+      if (!persistent) {
+        swiper.slideTo(5)
+      }
+
+      setLoadingScreen(false)
+    }).catch(null)
   })
 
   // mxcError into human readable message.
@@ -127,6 +133,13 @@ const Welcome: Component = () => {
               }).catch(() => null)
             }}
           />
+
+          <Slide>
+            <Header title={'No permissions'} />
+            <p class="text-center text-xl text-gray-600 mt-auto mb-auto pb-16">
+              Berry doesn't have enough permissions (persistent storage) to fully operate, please try again.
+            </p>
+          </Slide>
 
           {/* <CreateAccount onBack={() => keenSlider.moveToIdx(2)} />
 

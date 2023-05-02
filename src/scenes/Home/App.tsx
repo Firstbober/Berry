@@ -17,8 +17,9 @@ export const App = () => {
 
   const isScreenLG = createMediaQuery('(min-width: 1024px)')
 
-  onMount(() => {
-    client.events.startSyncingLoop().then(() => null).catch(() => null)
+  onMount(async () => {
+    await client.loadStores()
+    const result = await client.events.startSyncingLoop()
     // setLoadingScreen(false)
   })
 

@@ -1,4 +1,3 @@
-import { Json } from '@exodus/schemasafe'
 import { Error } from '../error'
 import ClientLocalData from './clientLocalData'
 import endpoints from './endpoints'

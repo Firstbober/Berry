@@ -38,6 +38,7 @@
     "@solid-primitives/media": "^2.1.6",
     "@solidjs/router": "^0.8.1",
     "comlink": "^4.4.1",
+    "localforage": "^1.10.0",
     "solid-js": "^1.6.10",
     "swiper": "^9.2.3",
     "ua-parser-js": "^1.0.35",

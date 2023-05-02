@@ -2,6 +2,17 @@ import { ProviderInfo } from './common'
 import ClientLocalData from './matrix/clientLocalData'
 import { Error, ErrorType } from './error'
 
+// Import from external libraries.
+import localForage from 'localforage'
+
+// Import from generated types.
+import { GETClientV3Sync } from './matrix/schema/gen_types/GET_client_v3_sync'
+import { Event } from './matrix/schema/gen_types/Event'
+import { JoinedRoom } from './matrix/schema/gen_types/JoinedRoom'
+import { KnockedRoom } from './matrix/schema/gen_types/KnockedRoom'
+import { LeftRoom } from './matrix/schema/gen_types/LeftRoom'
+import { InvitedRoom } from './matrix/schema/gen_types/InvitedRoom'
+
 // eslint-disable-next-line no-undef
 const mWorker = new ComlinkWorker<typeof import('./matrix')>(
   new URL('./matrix', import.meta.url)
@@ -15,10 +26,64 @@ let currentClient = -1
 const apiAccount = await new mWorker.Account()
 const apiEvents = await new mWorker.Events()
 
+/// Namespace for /sync endpoint data storage.
+namespace syncStore {
+  const store = localForage.createInstance({
+    name: 'Berry Storage',
+    storeName: 'sync'
+  })
+
+  // TODO Implement some system of marking the field, so we don't
+  // push everything to the DB everytime.
+
+  export let nextBatch: string | null
+  export let accountData: Event[]
+  export let presence: Event[]
+  export let roomsInvite: { [k: string]: InvitedRoom }
+  export let roomsJoin: { [k: string]: JoinedRoom }
+  export let roomsKnock: { [k: string]: KnockedRoom }
+  export let roomsLeave: { [k: string]: LeftRoom }
+
+  /// Load all the data from the IndexedDB.
+  export async function load () {
+    nextBatch = await store.getItem('next_batch')
+    accountData = await store.getItem('account_data')
+    presence = await store.getItem('presence')
+    roomsInvite = await store.getItem('rooms_invite')
+    roomsJoin = await store.getItem('rooms_join')
+    roomsKnock = await store.getItem('rooms_knock')
+    roomsLeave = await store.getItem('rooms_leave')
+
+    accountData ??= []
+    presence ??= []
+    roomsInvite ??= {}
+    roomsJoin ??= {}
+    roomsKnock ??= {}
+    roomsLeave ??= {}
+  }
+
+  /// Save all the data to the IndexedDB.
+  export async function save () {
+    await store.setItem('next_batch', nextBatch)
+    await store.setItem('account_data', accountData)
+    await store.setItem('presence', presence)
+    await store.setItem('rooms_invite', roomsInvite)
+    await store.setItem('rooms_join', roomsJoin)
+    await store.setItem('rooms_knock', roomsKnock)
+    await store.setItem('rooms_leave', roomsLeave)
+  }
+}
+
 export namespace client {
-  /// Load all client data from the localStorage.
+  /// Load all client data from the localStorage and init localForage for big data storage.
   export function loadClientsFromStorage () {
     console.log('loading...')
+
+    // Init localforage
+    localForage.config({
+      driver: localForage.INDEXEDDB,
+      name: 'Berry Storage'
+    })
 
     if (!localStorage.getItem(`${PREFIX}clients`)) return
     // [1, 2, 3, ...]
@@ -80,6 +145,11 @@ export namespace client {
     }
 
     localStorage.setItem(`${PREFIX}currentClient`, JSON.stringify(currentClient))
+  }
+
+  /// Loads all the stores in the code.
+  export async function loadStores () {
+    await syncStore.load()
   }
 
   const idToIDXclientDataMap: number[] = []
@@ -147,8 +217,9 @@ export namespace client {
      */
     export async function startSyncingLoop (): AResult<boolean, Error> {
       const clientData = getClientData(currentClient)
-      const res = await apiEvents.sync(clientData)
+      const res = await apiEvents.sync(clientData, syncStore.nextBatch == null ? undefined : syncStore.nextBatch)
 
+      // Handle response error.
       if (res.ok == false) {
         // Try to refresh access token
         if (res.error.type == ErrorType.InvalidToken) {
@@ -181,8 +252,47 @@ export namespace client {
         }
       }
 
-      // For now, just print the returned data.
-      console.log(res.value)
+      const dedupEvents = (events: Event[]): Event[] => {
+        const seen = new Set()
+
+        return events.filter(el => {
+          const duplicate = seen.has(el.type)
+          seen.add(el.type)
+          return !duplicate
+        })
+      }
+
+      const updateData = async (data: GETClientV3Sync) => {
+        // For now, just print the returned data.
+        console.log(data)
+
+        syncStore.nextBatch = data.next_batch
+
+        // Check if there are any account_data events, if so, insert them and remove duplicates.
+        if (data.account_data && data.account_data.events && data.account_data.events.length != 0) {
+          syncStore.accountData.push(...data.account_data.events)
+          syncStore.accountData.reverse()
+          syncStore.accountData = dedupEvents(syncStore.accountData)
+        }
+
+        // Check if there are any presence events, if so, insert them and remove duplicates.
+        if (data.presence && data.presence.events && data.presence.events.length != 0) {
+          syncStore.presence.push(...data.presence.events)
+          syncStore.presence = dedupEvents(syncStore.presence)
+        }
+
+        // Check if there are any rooms changes and merge them.
+        if (data.rooms) {
+          if (data.rooms.invite) syncStore.roomsInvite = { ...syncStore.roomsInvite, ...data.rooms.invite }
+          if (data.rooms.join) syncStore.roomsJoin = { ...syncStore.roomsJoin, ...data.rooms.join }
+          if (data.rooms.knock) syncStore.roomsKnock = { ...syncStore.roomsKnock, ...data.rooms.knock }
+          if (data.rooms.leave) syncStore.roomsLeave = { ...syncStore.roomsLeave, ...data.rooms.leave }
+        }
+
+        await syncStore.save()
+      }
+
+      await updateData(res.value)
 
       return { ok: false, error: { type: ErrorType.Internal } }
     }

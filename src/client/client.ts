@@ -1,6 +1,6 @@
 import { ProviderInfo } from './common'
 import ClientLocalData from './matrix/clientLocalData'
-import { Error } from './error'
+import { Error, ErrorType } from './error'
 
 // eslint-disable-next-line no-undef
 const mWorker = new ComlinkWorker<typeof import('./matrix')>(
@@ -13,13 +13,17 @@ let currentClient = -1
 
 // Create comlink-wrapped account class instance to act like a namespace
 const apiAccount = await new mWorker.Account()
+const apiEvents = await new mWorker.Events()
 
 export namespace client {
   /// Load all client data from the localStorage.
   export function loadClientsFromStorage () {
+    console.log('loading...')
+
     if (!localStorage.getItem(`${PREFIX}clients`)) return
     // [1, 2, 3, ...]
-    const berryClients = localStorage.getItem(`${PREFIX}clients`)
+    const berryClients = JSON.parse(localStorage.getItem(`${PREFIX}clients`))
+    dataPerClient.length = 0
 
     for (const cID of berryClients) {
       const clientLocalData: ClientLocalData = {
@@ -27,9 +31,14 @@ export namespace client {
         finalized: true,
         active: false,
 
+        providerInfo: null,
+
         accessToken: '',
         deviceID: '',
-        userID: ''
+        userID: '',
+
+        expiresInMs: null,
+        refreshToken: null
       }
 
       for (const key of Object.keys(clientLocalData)) {
@@ -46,6 +55,8 @@ export namespace client {
     const currentClientLS = localStorage.getItem(`${PREFIX}currentClient`)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     if (currentClientLS) currentClient = JSON.parse(currentClientLS)
+
+    saveClientsToStorage()
   }
 
   /// Save current client data into localStorage.
@@ -124,6 +135,56 @@ export namespace client {
       saveClientsToStorage()
 
       return { ok: true, value: {} }
+    }
+  }
+
+  export namespace events {
+    /**
+     * Start /sync long-polling loop with full sync if required.
+     *
+     * In case of returning an Error, the caller should handle
+     * only Network and in the case of any other error, prompt to re-log.
+     */
+    export async function startSyncingLoop (): AResult<boolean, Error> {
+      const clientData = getClientData(currentClient)
+      const res = await apiEvents.sync(clientData)
+
+      if (res.ok == false) {
+        // Try to refresh access token
+        if (res.error.type == ErrorType.InvalidToken) {
+          // Server invalidated our entire session, so we prompt to re-log.
+          if (res.error.soft_logout == false) {
+            console.info('Our token is invalid, so is our session, re-log.')
+            return res
+          }
+
+          console.info('We can refresh our access token, trying right now.')
+
+          // Refresh an access token.
+          const rfRes = await apiAccount.refreshAccessToken(
+            clientData.providerInfo.homeserver,
+            clientData.refreshToken
+          )
+
+          if (rfRes.ok == false) return rfRes
+
+          console.info('Successfully refreshed access token, retrying /sync')
+
+          clientData.accessToken = rfRes.value.access_token
+          if (rfRes.value.expires_in_ms) clientData.expiresInMs = rfRes.value.expires_in_ms
+          if (rfRes.value.refresh_token) clientData.refreshToken = rfRes.value.refresh_token
+          saveClientsToStorage()
+
+          return startSyncingLoop()
+        } else {
+          return res
+        }
+      }
+
+      // For now, just print the returned data.
+      console.log(res.value)
+
+      return { ok: false, error: { type: ErrorType.Internal } }
     }
   }
 }

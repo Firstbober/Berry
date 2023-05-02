@@ -1,8 +1,10 @@
 /// <reference lib="webworker" />
 import { mfetch, ProviderInfo } from './common'
 import { Error, ErrorType } from './error'
-import { account as _account } from './matrix/account'
 import schema from './matrix/schema'
+
+import { account as _account } from './matrix/account'
+import { events as _events } from './matrix/events'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars, no-undef
 declare const self: DedicatedWorkerGlobalScope
@@ -64,3 +66,4 @@ export async function validateDomain (domain: string): AResult<ProviderInfo, Err
 
 // Export classes to be accessible from worker instance and act like a namespace.
 export const Account = _account
+export const Events = _events

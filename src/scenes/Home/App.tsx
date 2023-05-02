@@ -3,13 +3,13 @@
 import { Show, onMount } from 'solid-js'
 
 import { useLoadingContext } from '../../App'
-import { Tab } from '../../ui/Tabs'
 
 import NavBar, { useNavBarController } from '../../ui/NavBar'
 import Home from './Home/Home'
 import Messages from './Messages/Messages'
 import Settings from './Settings/Settings'
 import { createMediaQuery } from '@solid-primitives/media'
+import { client } from '../../client/client'
 
 export const App = () => {
   const [{ setLoadingScreen }] = useLoadingContext()
@@ -18,7 +18,8 @@ export const App = () => {
   const isScreenLG = createMediaQuery('(min-width: 1024px)')
 
   onMount(() => {
-    setLoadingScreen(false)
+    client.events.startSyncingLoop().then(() => null).catch(() => null)
+    // setLoadingScreen(false)
   })
 
   return <main class='w-full h-full bg-white text-black relative flex flex-col'>

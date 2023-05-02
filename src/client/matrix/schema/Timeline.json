@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "ClientEventWithoutRoomID#"
+      }
+    },
+    "limited": {
+      "type": "boolean"
+    },
+    "prev_batch": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "events"
+  ]
+}

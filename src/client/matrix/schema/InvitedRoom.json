@@ -1,0 +1,7 @@
+{
+  "properties": {
+    "invite_state": {
+      "$ref": "InviteState#"
+    }
+  }
+}

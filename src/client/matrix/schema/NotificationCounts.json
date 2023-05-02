@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "highlight_count": {
+      "type": "number"
+    },
+    "notification_count": {
+      "type": "number"
+    }
+  }
+}

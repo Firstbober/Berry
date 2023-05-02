@@ -14,7 +14,8 @@
       "vite-plugin-comlink/client"
     ],
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "resolveJsonModule": true
   },
   "files": ["./.eslintrc.js", "./vite.config.ts", "./tailwind.config.js", "./postcss.config.js"],
   "include": ["src"]

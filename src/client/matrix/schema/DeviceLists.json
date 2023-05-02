@@ -1,0 +1,16 @@
+{
+  "properties": {
+    "changed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "left": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

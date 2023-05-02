@@ -1,6 +1,6 @@
 root = true
 
-[*.{js,ts,tsx}]
+[*.{js,ts,tsx,json}]
 end_of_line = lf
 insert_final_newline = true
 

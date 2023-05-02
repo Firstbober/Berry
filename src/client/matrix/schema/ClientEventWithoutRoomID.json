@@ -1,0 +1,46 @@
+{
+  "properties": {
+    "content": {
+      "type": "object"
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "origin_server_ts": {
+      "type": "number"
+    },
+    "sender": {
+      "type": "string"
+    },
+    "state_key": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "unsigned": {
+      "type": "object",
+      "properties": {
+        "age": {
+          "type": "number"
+        },
+        "prev_content": {
+          "type": "object"
+        },
+        "redacted_because": {
+          "$ref": "ClientEventWithoutRoomID#"
+        },
+        "transaction_id": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "content",
+    "event_id",
+    "origin_server_ts",
+    "sender",
+    "type"
+  ]
+}

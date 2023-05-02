@@ -1,0 +1,16 @@
+{
+  "properties": {
+    "m.heroes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "m.invited_member_count": {
+      "type": "number"
+    },
+    "m.joined_member_count": {
+      "type": "number"
+    }
+  }
+}

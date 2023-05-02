@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "content": {
+      "type": "object"
+    },
+    "sender": {
+      "type": "string"
+    },
+    "state_key": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "content",
+    "sender",
+    "state_key",
+    "type"
+  ]
+}

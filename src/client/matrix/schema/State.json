@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "ClientEventWithoutRoomID#"
+      }
+    }
+  }
+}

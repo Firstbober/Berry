@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "content": {
+      "type": "object"
+    },
+    "type": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "content",
+    "type"
+  ]
+}

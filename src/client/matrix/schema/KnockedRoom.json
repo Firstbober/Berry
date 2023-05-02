@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "knock_state": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "StrippedStateEvent#"
+          }
+        }
+      }
+    }
+  }
+}

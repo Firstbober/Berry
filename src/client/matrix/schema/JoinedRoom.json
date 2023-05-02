@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "account_data": {
+      "$ref": "AccountData#"
+    },
+    "ephemeral": {
+      "$ref": "Ephemeral#"
+    },
+    "state": {
+      "$ref": "State#"
+    },
+    "summary": {
+      "$ref": "RoomSummary#"
+    },
+    "timeline": {
+      "$ref": "Timeline#"
+    },
+    "unread_notifications": {
+      "$ref": "NotificationCounts#"
+    },
+    "unread_thread_notifications": {
+      "type": "object",
+      "patternProperties": {
+        "^.": {
+          "$ref": "NotificationCounts#"
+        }
+      }
+    }
+  }
+}

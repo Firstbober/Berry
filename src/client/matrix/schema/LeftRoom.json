@@ -1,0 +1,13 @@
+{
+  "properties": {
+    "account_data": {
+      "$ref": "AccountData#"
+    },
+    "state": {
+      "$ref": "State#"
+    },
+    "timeline": {
+      "$ref": "Timeline#"
+    }
+  }
+}

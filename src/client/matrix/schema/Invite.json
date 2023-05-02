@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "display_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "display_name"
+  ]
+}

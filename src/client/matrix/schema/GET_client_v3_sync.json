@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "account_data": {
+      "$ref": "AccountData#"
+    },
+    "device_lists": {
+      "$ref": "DeviceLists#"
+    },
+    "device_one_time_keys_count": {
+      "type": "object",
+      "patternProperties": {
+        "^.": {
+          "type": "number"
+        }
+      }
+    },
+    "next_batch": {
+      "type": "string"
+    },
+    "presence": {
+      "$ref": "Presence#"
+    },
+    "rooms": {
+      "properties": {
+        "invite": {
+          "type": "object",
+          "patternProperties": {
+            "^.": {
+              "$ref": "InvitedRoom#"
+            }
+          }
+        },
+        "join": {
+          "type": "object",
+          "patternProperties": {
+            "^.": {
+              "$ref": "JoinedRoom#"
+            }
+          }
+        },
+        "knock": {
+          "type": "object",
+          "patternProperties": {
+            "^.": {
+              "$ref": "KnockedRoom#"
+            }
+          }
+        },
+        "leave": {
+          "type": "object",
+          "patternProperties": {
+            "^.": {
+              "$ref": "LeftRoom#"
+            }
+          }
+        }
+      }
+    },
+    "to_device": {
+      "$ref": "ToDevice#"
+    }
+  },
+  "required": [
+    "next_batch"
+  ]
+}

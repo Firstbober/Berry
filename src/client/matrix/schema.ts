@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { parser as schemasafeParser, ValidatorOptions } from '@exodus/schemasafe'
+import { parser as schemasafeParser, validator, ValidatorOptions } from '@exodus/schemasafe'
 
 import fs_AccountData from './schema/AccountData.json'
 import fs_Presence from './schema/Presence.json'
@@ -26,6 +26,9 @@ import fs_NotificationCounts from './schema/NotificationCounts.json'
 import fs_ToDevice from './schema/ToDevice.json'
 
 import fs_GET_client_v3_sync from './schema/GET_client_v3_sync.json'
+
+import fs_m_room_create from './schema/m_room_create.json'
+import fs_m_room_canonical_alias from './schema/m_room_canonical_alias.json'
 
 // import json from './schema/AccountData?json'
 
@@ -244,6 +247,11 @@ namespace schema {
   // Events related
 
   export const GET_client_v3_sync = schemasafeParser(fs_GET_client_v3_sync, parserOptions)
+
+  // Events
+
+  export const m_room_create = validator(fs_m_room_create, parserOptions)
+  export const m_room_canonical_alias = validator(fs_m_room_canonical_alias, parserOptions)
 }
 
 export default schema

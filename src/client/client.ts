@@ -1,21 +1,18 @@
 import { ProviderInfo } from './common'
 import ClientLocalData from './matrix/clientLocalData'
-import { Error, ErrorType } from './error'
+import { Error } from './error'
 
 // Import from external libraries.
 import localForage from 'localforage'
 
 // Import from generated types.
-import { GETClientV3Sync } from './matrix/schema/gen_types/GET_client_v3_sync'
 import { Event } from './matrix/schema/gen_types/Event'
 import { JoinedRoom } from './matrix/schema/gen_types/JoinedRoom'
 import { KnockedRoom } from './matrix/schema/gen_types/KnockedRoom'
 import { LeftRoom } from './matrix/schema/gen_types/LeftRoom'
 import { InvitedRoom } from './matrix/schema/gen_types/InvitedRoom'
-import { ClientEventWithoutRoomID } from './matrix/schema/gen_types/ClientEventWithoutRoomID'
-import schema from './matrix/schema'
-import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
-import { MRoomCanonicalAlias } from './matrix/schema/gen_types/m_room_canonical_alias'
+
+import { Events } from './events'
 
 // eslint-disable-next-line no-undef
 const mWorker = new ComlinkWorker<typeof import('./matrix')>(
@@ -29,6 +26,9 @@ let currentClient = -1
 // Create comlink-wrapped account class instance to act like a namespace
 const apiAccount = await new mWorker.Account()
 const apiEvents = await new mWorker.Events()
+
+export type _ApiEvents = typeof apiEvents
+export type _ApiAccount = typeof apiAccount
 
 /// Namespace for /sync endpoint data storage.
 namespace syncStore {
@@ -79,68 +79,6 @@ namespace syncStore {
 }
 
 export namespace client {
-  /// Here are all the cached values like rooms, spaces, etc.
-  export namespace cache {
-    interface RoomBase {
-      state: {
-        canonicalAlias?: string,
-        alternativeAliases?: string[],
-
-        creator: string,
-        federate: boolean,
-        predecessor?: {
-          eventID: string,
-          roomID: string
-        },
-        version: string,
-
-        join_rules: {
-          rule: 'public' | 'knock' | 'invite' | 'private' | 'restricted'
-          allow: {
-            roomID?: string,
-            type: 'm.room.membership'
-          }[]
-        },
-
-        members: {
-          id: string,
-          avatarUrl?: string,
-          displayName?: string,
-          membership: 'invite' | 'join' | 'knock' | 'leave' | 'ban',
-          thirdPartyInvite?: {
-            displayName: string
-          },
-          powerLevel: number
-        }[],
-
-        powerLevels: {
-          ban: number,
-          events: {[k: string]: number},
-          eventsDefault: number,
-          invite: number,
-          kick: number,
-          notifications: {
-            room: number
-          },
-          redact: number,
-          stateDefault: number,
-          usersDefault: number
-        }
-      }
-    }
-
-    export interface AnyRoom extends RoomBase {
-      type: 'any'
-    }
-
-    export interface Space extends RoomBase {
-      type: 'space',
-      rooms: AnyRoom | Space
-    }
-
-    export const rooms: { [k: string]: AnyRoom | Space } = {}
-  }
-
   /// Load all client data from the localStorage and init localForage for big data storage.
   export function loadClientsFromStorage () {
     console.log('loading...')
@@ -188,6 +126,11 @@ export namespace client {
     if (currentClientLS) currentClient = JSON.parse(currentClientLS)
 
     saveClientsToStorage()
+    events.init(
+      getClientData(currentClient),
+      apiEvents,
+      apiAccount
+    )
   }
 
   /// Save current client data into localStorage.
@@ -274,161 +217,5 @@ export namespace client {
     }
   }
 
-  export namespace events {
-    /**
-     * Start /sync long-polling loop with full sync if required.
-     *
-     * In case of returning an Error, the caller should handle
-     * only Network and in the case of any other error, prompt to re-log.
-     */
-    export async function startSyncingLoop (): AResult<boolean, Error> {
-      const clientData = getClientData(currentClient)
-      syncStore.nextBatch = null
-      const res = await apiEvents.sync(clientData, syncStore.nextBatch == null ? undefined : syncStore.nextBatch)
-
-      // Handle response error.
-      if (res.ok == false) {
-        // Try to refresh access token
-        if (res.error.type == ErrorType.InvalidToken) {
-          // Server invalidated our entire session, so we prompt to re-log.
-          if (res.error.soft_logout == false) {
-            console.info('Our token is invalid, so is our session, re-log.')
-            return res
-          }
-
-          console.info('We can refresh our access token, trying right now.')
-
-          // Refresh an access token.
-          const rfRes = await apiAccount.refreshAccessToken(
-            clientData.providerInfo.homeserver,
-            clientData.refreshToken
-          )
-
-          if (rfRes.ok == false) return rfRes
-
-          console.info('Successfully refreshed access token, retrying /sync')
-
-          clientData.accessToken = rfRes.value.access_token
-          if (rfRes.value.expires_in_ms) clientData.expiresInMs = rfRes.value.expires_in_ms
-          if (rfRes.value.refresh_token) clientData.refreshToken = rfRes.value.refresh_token
-          saveClientsToStorage()
-
-          return startSyncingLoop()
-        } else {
-          return res
-        }
-      }
-
-      const dedupEvents = (events: Event[]): Event[] => {
-        const seen = new Set()
-
-        return events.filter(el => {
-          const duplicate = seen.has(el.type)
-          seen.add(el.type)
-          return !duplicate
-        })
-      }
-
-      /// Modify room passed to the arguments of this function based on the event
-      const updateRoomViaStateEvent = (room: cache.AnyRoom | cache.Space, event: ClientEventWithoutRoomID) => {
-        if (event.type == 'm.room.canonical_alias') {
-          if (!schema.m_room_canonical_alias(event.content as null)) {
-            return console.warn('Validation failed for m.room.canonical_alias event type.', event.content)
-          }
-          const content = event.content as MRoomCanonicalAlias
-
-          room.state.canonicalAlias = content.alias
-          room.state.alternativeAliases = content.alt_aliases
-
-          return
-        }
-
-        if (event.type == 'm.room.create') {
-          if (!schema.m_room_create(event.content as null)) {
-            return console.warn('Validation failed for m.room.create event type.', event.content)
-          }
-          const content = event.content as MRoomCreate
-
-          room.state.creator = content.creator
-          room.state.federate = content['m.federate'] ? content['m.federate'] : true
-
-          if (content.predecessor) {
-            room.state.predecessor.roomID = content.predecessor.room_id
-            room.state.predecessor.eventID = content.predecessor.event_id
-          }
-
-          room.state.version = content.room_version ? content.room_version : '1'
-
-          room.type = content.type
-            ? content.type == 'm.space'
-              ? 'space'
-              : 'any'
-            : 'any'
-        }
-      }
-
-      const updateData = async (data: GETClientV3Sync) => {
-        // Comment out for now until we find the best way to store things.
-        // syncStore.nextBatch = data.next_batch
-
-        if (data.rooms) {
-          // Read data from rooms.join.
-          if (data.rooms.join) {
-            // Iterate over joined rooms.
-            for (const [dRoomK, dRoomV] of Object.entries(data.rooms.join)) {
-              const room: cache.AnyRoom | cache.Space = Object.hasOwn(cache.rooms, dRoomK)
-                ? cache.rooms[dRoomK]
-                : {
-                    type: 'any',
-
-                    state: {
-                      creator: '',
-                      federate: true,
-                      version: '1',
-
-                      join_rules: {
-                        rule: 'invite',
-                        allow: []
-                      },
-
-                      members: [],
-
-                      powerLevels: {
-                        ban: 50,
-                        events: {},
-                        eventsDefault: 0,
-                        invite: 0,
-                        kick: 50,
-                        notifications: {
-                          room: 50
-                        },
-                        redact: 50,
-                        stateDefault: 50,
-                        usersDefault: 0
-                      }
-                    }
-                  }
-
-              // If there are any state events, iterate over them and update cached room.
-              if (dRoomV.state.events) {
-                for (const event of dRoomV.state.events) {
-                  if (event.state_key != undefined || event.state_key == '') updateRoomViaStateEvent(room, event)
-                }
-              }
-
-              console.log(room)
-            }
-          }
-        }
-
-        await syncStore.save()
-
-        console.log(data)
-      }
-
-      await updateData(res.value)
-
-      return { ok: false, error: { type: ErrorType.Internal } }
-    }
-  }
+  export const events = new Events()
 }

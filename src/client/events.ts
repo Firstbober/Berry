@@ -16,12 +16,14 @@ export class Events {
   apiEvents: _ApiEvents
   apiAccount: _ApiAccount
 
+  /// Init events class with required data.
   init (clientData: ClientLocalData, apiEvents: _ApiEvents, apiAccount: _ApiAccount) {
     this.clientData = clientData
     this.apiEvents = apiEvents
     this.apiAccount = apiAccount
   }
 
+  /// Validate event content with schema validator.
   private validateEvent<T> (type: EventType, validator: Validate, evContent: object): Result<T, Error> {
     if (!validator(evContent as Json)) {
       console.warn(`Validation failed for ${type} event type.`, evContent)
@@ -35,7 +37,10 @@ export class Events {
     return { ok: true, value: evContent as T }
   }
 
+  /// Check if state event is interpretable by the client. If so,
+  /// then modify the room accordingly.
   private roomStateEvent (room: cache.Room, ev: ClientEventWithoutRoomID) {
+    /// Do required checks and call the function for better looking code.
     const checkEv = <T>(type: EventType, validator: Validate, then: (c: T) => void): [string, EventType] => {
       if (ev.type == type) {
         const c = this.validateEvent<T>(type, validator, ev.content)
@@ -51,6 +56,7 @@ export class Events {
       room.state.canonicalAlias = c.alias
       room.state.alternativeAliases = c.alt_aliases
     })
+    if (eR != undefined) return eR
 
     eR = checkEv<MRoomCreate>('m.room.create', schema.m_room_create, (c) => {
       room.state.creator = c.creator
@@ -69,6 +75,7 @@ export class Events {
           : 'any'
         : 'any'
     })
+    if (eR != undefined) return eR
 
     return eR
   }
@@ -115,6 +122,7 @@ export class Events {
       }
     }
 
+    /// Read state events only from any passed events.
     const readStateEvents = (room: cache.Room, events: ClientEventWithoutRoomID[]) => {
       const changes: [string, EventType][] = []
 

@@ -1,6 +1,9 @@
 /// Here are all the cached values like rooms, spaces, etc.
 export namespace cache {
-    interface RoomBase {
+    export interface Room {
+      type: 'any' | 'space',
+      id: string,
+
       state: {
         canonicalAlias?: string,
         alternativeAliases?: string[],
@@ -48,14 +51,48 @@ export namespace cache {
       }
     }
 
-    export interface AnyRoom extends RoomBase {
-      type: 'any'
-    }
-
-    export interface Space extends RoomBase {
+    export interface Space extends Room {
       type: 'space',
-      rooms: AnyRoom | Space
+      rooms: Room
     }
 
-    export const rooms: { [k: string]: AnyRoom | Space } = {}
+    export const rooms: { [k: string]: Room } = {}
+
+    /// If possible, get the room from the cache, or create
+    /// a new one according to spec.
+    export function getOrCreateRoom (id: string): Room {
+      return Object.hasOwn(cache.rooms, id)
+        ? cache.rooms[id]
+        : {
+            type: 'any',
+            id,
+
+            state: {
+              creator: '',
+              federate: true,
+              version: '1',
+
+              join_rules: {
+                rule: 'invite',
+                allow: []
+              },
+
+              members: [],
+
+              powerLevels: {
+                ban: 50,
+                events: {},
+                eventsDefault: 0,
+                invite: 0,
+                kick: 50,
+                notifications: {
+                  room: 50
+                },
+                redact: 50,
+                stateDefault: 50,
+                usersDefault: 0
+              }
+            }
+          }
+    }
   }

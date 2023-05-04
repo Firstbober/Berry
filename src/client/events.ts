@@ -1,3 +1,4 @@
+import { Validate, Json } from '@exodus/schemasafe'
 import { cache } from './cache'
 import { _ApiEvents, _ApiAccount, client } from './client'
 import { Error, ErrorType } from './error'
@@ -8,6 +9,8 @@ import { GETClientV3Sync } from './matrix/schema/gen_types/GET_client_v3_sync'
 import { MRoomCanonicalAlias } from './matrix/schema/gen_types/m_room_canonical_alias'
 import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
 
+type EventType = 'm.room.canonical_alias' | 'm.room.create'
+
 export class Events {
   clientData: ClientLocalData
   apiEvents: _ApiEvents
@@ -17,6 +20,57 @@ export class Events {
     this.clientData = clientData
     this.apiEvents = apiEvents
     this.apiAccount = apiAccount
+  }
+
+  private validateEvent<T> (type: EventType, validator: Validate, evContent: object): Result<T, Error> {
+    if (!validator(evContent as Json)) {
+      console.warn(`Validation failed for ${type} event type.`, evContent)
+      return {
+        ok: false,
+        error: {
+          type: ErrorType.InvalidJSON
+        }
+      }
+    }
+    return { ok: true, value: evContent as T }
+  }
+
+  private roomStateEvent (room: cache.Room, ev: ClientEventWithoutRoomID) {
+    const checkEv = <T>(type: EventType, validator: Validate, then: (c: T) => void): [string, EventType] => {
+      if (ev.type == type) {
+        const c = this.validateEvent<T>(type, validator, ev.content)
+        if (c.ok == false) return
+
+        then(c.value)
+        return [room.id, type]
+      }
+      return undefined
+    }
+
+    let eR = checkEv<MRoomCanonicalAlias>('m.room.canonical_alias', schema.m_room_canonical_alias, (c) => {
+      room.state.canonicalAlias = c.alias
+      room.state.alternativeAliases = c.alt_aliases
+    })
+
+    eR = checkEv<MRoomCreate>('m.room.create', schema.m_room_create, (c) => {
+      room.state.creator = c.creator
+      room.state.federate = c['m.federate'] ? c['m.federate'] : true
+
+      if (c.predecessor) {
+        room.state.predecessor.roomID = c.predecessor.room_id
+        room.state.predecessor.eventID = c.predecessor.event_id
+      }
+
+      room.state.version = c.room_version ? c.room_version : '1'
+
+      room.type = c.type
+        ? c.type == 'm.space'
+          ? 'space'
+          : 'any'
+        : 'any'
+    })
+
+    return eR
   }
 
   /**
@@ -61,52 +115,14 @@ export class Events {
       }
     }
 
-    const dedupEvents = (events: Event[]): Event[] => {
-      const seen = new Set()
+    const readStateEvents = (room: cache.Room, events: ClientEventWithoutRoomID[]) => {
+      const changes: [string, EventType][] = []
 
-      return events.filter(el => {
-        const duplicate = seen.has(el.type)
-        seen.add(el.type)
-        return !duplicate
-      })
-    }
-
-    /// Modify room passed to the arguments of this function based on the event.
-    const updateRoomViaStateEvent = (room: cache.AnyRoom | cache.Space, event: ClientEventWithoutRoomID) => {
-      if (event.type == 'm.room.canonical_alias') {
-        if (!schema.m_room_canonical_alias(event.content as null)) {
-          return console.warn('Validation failed for m.room.canonical_alias event type.', event.content)
-        }
-        const content = event.content as MRoomCanonicalAlias
-
-        room.state.canonicalAlias = content.alias
-        room.state.alternativeAliases = content.alt_aliases
-
-        return
+      for (const event of events) {
+        if (event.state_key != undefined || event.state_key == '') changes.push(this.roomStateEvent(room, event))
       }
 
-      if (event.type == 'm.room.create') {
-        if (!schema.m_room_create(event.content as null)) {
-          return console.warn('Validation failed for m.room.create event type.', event.content)
-        }
-        const content = event.content as MRoomCreate
-
-        room.state.creator = content.creator
-        room.state.federate = content['m.federate'] ? content['m.federate'] : true
-
-        if (content.predecessor) {
-          room.state.predecessor.roomID = content.predecessor.room_id
-          room.state.predecessor.eventID = content.predecessor.event_id
-        }
-
-        room.state.version = content.room_version ? content.room_version : '1'
-
-        room.type = content.type
-          ? content.type == 'm.space'
-            ? 'space'
-            : 'any'
-          : 'any'
-      }
+      return changes
     }
 
     /// Read all the data from the sync endpoint.
@@ -119,45 +135,10 @@ export class Events {
         if (data.rooms.join) {
           // Iterate over joined rooms.
           for (const [dRoomK, dRoomV] of Object.entries(data.rooms.join)) {
-            const room: cache.AnyRoom | cache.Space = Object.hasOwn(cache.rooms, dRoomK)
-              ? cache.rooms[dRoomK]
-              : {
-                  type: 'any',
-
-                  state: {
-                    creator: '',
-                    federate: true,
-                    version: '1',
-
-                    join_rules: {
-                      rule: 'invite',
-                      allow: []
-                    },
-
-                    members: [],
-
-                    powerLevels: {
-                      ban: 50,
-                      events: {},
-                      eventsDefault: 0,
-                      invite: 0,
-                      kick: 50,
-                      notifications: {
-                        room: 50
-                      },
-                      redact: 50,
-                      stateDefault: 50,
-                      usersDefault: 0
-                    }
-                  }
-                }
+            const room: cache.Room = cache.getOrCreateRoom(dRoomK)
 
             // If there are any state events, iterate over them and update cached room.
-            if (dRoomV.state.events) {
-              for (const event of dRoomV.state.events) {
-                if (event.state_key != undefined || event.state_key == '') updateRoomViaStateEvent(room, event)
-              }
-            }
+            if (dRoomV.state.events) readStateEvents(room, dRoomV.state.events)
 
             console.log(room)
           }

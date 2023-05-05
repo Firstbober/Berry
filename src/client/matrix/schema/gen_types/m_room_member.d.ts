@@ -7,7 +7,7 @@
 
 export interface MRoomMember {
   avatar_url?: string;
-  display_name?: string;
+  displayname?: string | null;
   is_direct?: boolean;
   join_authorised_via_users_server?: string;
   membership: "invite" | "join" | "knock" | "leave" | "ban";

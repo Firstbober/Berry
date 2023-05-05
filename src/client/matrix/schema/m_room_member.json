@@ -2,10 +2,16 @@
   "type": "object",
   "properties": {
     "avatar_url": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "display_name": {
-      "type": "string"
+    "displayname": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "is_direct": {
       "type": "boolean"

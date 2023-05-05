@@ -11,8 +11,10 @@ import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
 import { MRoomJoinRules } from './matrix/schema/gen_types/m_room_join_rules'
 import { MRoomMember } from './matrix/schema/gen_types/m_room_member'
 import { MRoomPowerLevels } from './matrix/schema/gen_types/m_room_power_levels'
+import { MRoomName } from './matrix/schema/gen_types/m_room_name'
+import { MRoomTopic } from './matrix/schema/gen_types/m_room_topic'
 
-type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules' | 'm.room.member' | 'm.room.power_levels'
+type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules' | 'm.room.member' | 'm.room.power_levels' | 'm.room.name' |'m.room.topic'
 
 export class Events {
   clientData: ClientLocalData
@@ -98,7 +100,7 @@ export class Events {
       room.state.members = {}
       room.state.members[ev.state_key] = {
         avatarUrl: c.avatar_url,
-        displayName: c.display_name,
+        displayName: c.displayname == null ? undefined : c.displayname,
         membership: c.membership,
         thirdPartyInvite: c.third_party_invite
           ? {
@@ -126,6 +128,16 @@ export class Events {
       room.state.powerLevels.usersDefault = c.users_default ?? 0
 
       room.state.powerLevels.memberLevels = c.users ?? {}
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomName>('m.room.name', schema.m_room_name, (c) => {
+      room.state.name = c.name
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomTopic>('m.room.topic', schema.m_room_topic, (c) => {
+      room.state.topic = c.topic
     })
     if (eR != undefined) return eR
 

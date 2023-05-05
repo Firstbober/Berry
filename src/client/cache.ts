@@ -5,6 +5,9 @@ export namespace cache {
       id: string,
 
       state: {
+        name?: string,
+        topic?: string,
+
         canonicalAlias?: string,
         alternativeAliases?: string[],
 

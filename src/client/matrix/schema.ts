@@ -29,6 +29,7 @@ import fs_GET_client_v3_sync from './schema/GET_client_v3_sync.json'
 
 import fs_m_room_create from './schema/m_room_create.json'
 import fs_m_room_canonical_alias from './schema/m_room_canonical_alias.json'
+import fs_m_room_join_rules from './schema/m_room_join_rules.json'
 
 // import json from './schema/AccountData?json'
 
@@ -252,6 +253,7 @@ namespace schema {
 
   export const m_room_create = validator(fs_m_room_create, parserOptions)
   export const m_room_canonical_alias = validator(fs_m_room_canonical_alias, parserOptions)
+  export const m_room_join_rules = validator(fs_m_room_join_rules, parserOptions)
 }
 
 export default schema

@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "allow": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "m.room_membership"
+            ]
+          }
+        },
+        "required": [
+          "room_id",
+          "type"
+        ]
+      }
+    },
+    "join_rule": {
+      "type": "string",
+      "enum": [
+        "public",
+        "knock",
+        "invite",
+        "private",
+        "restricted"
+      ]
+    }
+  },
+  "required": [
+    "join_rule"
+  ]
+}

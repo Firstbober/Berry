@@ -8,8 +8,9 @@ import { ClientEventWithoutRoomID } from './matrix/schema/gen_types/ClientEventW
 import { GETClientV3Sync } from './matrix/schema/gen_types/GET_client_v3_sync'
 import { MRoomCanonicalAlias } from './matrix/schema/gen_types/m_room_canonical_alias'
 import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
+import { MRoomJoinRules } from './matrix/schema/gen_types/m_room_join_rules'
 
-type EventType = 'm.room.canonical_alias' | 'm.room.create'
+type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules'
 
 export class Events {
   clientData: ClientLocalData
@@ -44,7 +45,7 @@ export class Events {
     const checkEv = <T>(type: EventType, validator: Validate, then: (c: T) => void): [string, EventType] => {
       if (ev.type == type) {
         const c = this.validateEvent<T>(type, validator, ev.content)
-        if (c.ok == false) return
+        if (c.ok == false) return undefined
 
         then(c.value)
         return [room.id, type]
@@ -74,6 +75,20 @@ export class Events {
           ? 'space'
           : 'any'
         : 'any'
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomJoinRules>('m.room.join_rules', schema.m_room_join_rules, (c) => {
+      room.state.join_rules.rule = c.join_rule
+
+      if (c.allow) {
+        for (const allowRule of c.allow) {
+          room.state.join_rules.allow.push({
+            roomID: allowRule.room_id,
+            type: allowRule.type
+          })
+        }
+      }
     })
     if (eR != undefined) return eR
 

@@ -20,7 +20,7 @@ export namespace cache {
           rule: 'public' | 'knock' | 'invite' | 'private' | 'restricted'
           allow: {
             roomID?: string,
-            type: 'm.room.membership'
+            type: 'm.room_membership'
           }[]
         },
 

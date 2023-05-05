@@ -6,7 +6,7 @@
  */
 
 export interface MRoomMember {
-  avatar_url?: string;
+  avatar_url?: string | null;
   displayname?: string | null;
   is_direct?: boolean;
   join_authorised_via_users_server?: string;

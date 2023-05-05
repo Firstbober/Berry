@@ -1,5 +1,17 @@
 /// Here are all the cached values like rooms, spaces, etc.
 export namespace cache {
+    export interface ThumbnailInfo {
+      w?: number,
+      h?: number,
+      mimetype?: string,
+      size?: number
+    }
+
+    export interface ImageInfo extends ThumbnailInfo {
+      thumbnailInfo?: ThumbnailInfo,
+      thumbnailUrl?: string
+    }
+
     export interface Room {
       type: 'any' | 'space',
       id: string,
@@ -7,6 +19,11 @@ export namespace cache {
       state: {
         name?: string,
         topic?: string,
+
+        avatar?: {
+          info: ImageInfo,
+          url: string
+        }
 
         canonicalAlias?: string,
         alternativeAliases?: string[],

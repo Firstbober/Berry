@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "info": {
+      "type": "object",
+      "properties": {
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        },
+        "mimetype": {
+          "type": "string"
+        },
+        "size": {
+          "type": "number"
+        },
+        "thumbnail_url": {
+          "type": "string"
+        },
+        "thumbnail_info": {
+          "type": "object",
+          "properties": {
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            },
+            "mimetype": {
+              "type": "string"
+            },
+            "size": {
+              "type": "number"
+            }
+          },
+          "required": []
+        }
+      },
+      "required": []
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "required": []
+}

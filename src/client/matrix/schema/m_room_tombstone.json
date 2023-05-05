@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "body": {
+      "type": "string"
+    },
+    "replacement_room": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "body",
+    "replacement_room"
+  ]
+}

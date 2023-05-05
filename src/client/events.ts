@@ -16,12 +16,14 @@ import { MRoomTopic } from './matrix/schema/gen_types/m_room_topic'
 import { MRoomAvatar } from './matrix/schema/gen_types/m_room_avatar'
 import { MRoomPinnedEvents } from './matrix/schema/gen_types/m_room_pinned_events'
 import { MRoomHistoryVisibility } from './matrix/schema/gen_types/m_room_history_visibility'
+import { MRoomGuestAccess } from './matrix/schema/gen_types/m_room_guest_access'
+import { MRoomTombstone } from './matrix/schema/gen_types/m_room_tombstone'
 
 type EventType =
   'm.room.canonical_alias'| 'm.room.create' | 'm.room.join_rules'
   | 'm.room.member' | 'm.room.power_levels' | 'm.room.name'
   | 'm.room.topic' | 'm.room.avatar' | 'm.room.pinned_events'
-  | 'm.room.history_visibility'
+  | 'm.room.history_visibility' | 'm.room.guest_access' | 'm.room.tombstone'
 
 export class Events {
   clientData: ClientLocalData
@@ -185,6 +187,19 @@ export class Events {
 
     eR = checkEv<MRoomHistoryVisibility>('m.room.history_visibility', schema.m_room_history_visibility, (c) => {
       room.state.historyVisibility = c.history_visibility
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomGuestAccess>('m.room.guest_access', schema.m_room_guest_access, (c) => {
+      room.state.guestAccess = c.guest_access
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomTombstone>('m.room.tombstone', schema.m_room_tombstone, (c) => {
+      room.state.tombstone = {
+        body: c.body,
+        replacement: c.replacement_room
+      }
     })
     if (eR != undefined) return eR
 

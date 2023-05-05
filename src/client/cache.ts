@@ -27,9 +27,15 @@ export namespace cache {
 
         pinnedEvents: string[],
         historyVisibility: 'invited' | 'joined' | 'shared' | 'world_readable',
+        guestAccess: 'can_join' | 'forbidden',
 
         canonicalAlias?: string,
         alternativeAliases?: string[],
+
+        tombstone?: {
+          body: string,
+          replacement: string
+        }
 
         creator: string,
         federate: boolean,
@@ -99,6 +105,7 @@ export namespace cache {
 
               pinnedEvents: [],
               historyVisibility: 'shared',
+              guestAccess: 'forbidden',
 
               join_rules: {
                 rule: 'invite',

@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "guest_access": {
+      "type": "string",
+      "enum": [
+        "can_join",
+        "forbidden"
+      ]
+    }
+  },
+  "required": [
+    "guest_access"
+  ]
+}

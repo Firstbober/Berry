@@ -23,7 +23,9 @@ export namespace cache {
         avatar?: {
           info: ImageInfo,
           url: string
-        }
+        },
+
+        pinnedEvents: string[],
 
         canonicalAlias?: string,
         alternativeAliases?: string[],

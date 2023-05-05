@@ -14,11 +14,12 @@ import { MRoomPowerLevels } from './matrix/schema/gen_types/m_room_power_levels'
 import { MRoomName } from './matrix/schema/gen_types/m_room_name'
 import { MRoomTopic } from './matrix/schema/gen_types/m_room_topic'
 import { MRoomAvatar } from './matrix/schema/gen_types/m_room_avatar'
+import { MRoomPinnedEvents } from './matrix/schema/gen_types/m_room_pinned_events'
 
 type EventType =
   'm.room.canonical_alias'| 'm.room.create' | 'm.room.join_rules'
   | 'm.room.member' | 'm.room.power_levels' | 'm.room.name'
-  | 'm.room.topic' | 'm.room.avatar'
+  | 'm.room.topic' | 'm.room.avatar' | 'm.room.pinned_events'
 
 export class Events {
   clientData: ClientLocalData
@@ -172,6 +173,11 @@ export class Events {
             }
           : c.info
       }
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomPinnedEvents>('m.room.pinned_events', schema.m_room_pinned_events, (c) => {
+      room.state.pinnedEvents = c.pinned
     })
     if (eR != undefined) return eR
 

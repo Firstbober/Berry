@@ -15,11 +15,13 @@ import { MRoomName } from './matrix/schema/gen_types/m_room_name'
 import { MRoomTopic } from './matrix/schema/gen_types/m_room_topic'
 import { MRoomAvatar } from './matrix/schema/gen_types/m_room_avatar'
 import { MRoomPinnedEvents } from './matrix/schema/gen_types/m_room_pinned_events'
+import { MRoomHistoryVisibility } from './matrix/schema/gen_types/m_room_history_visibility'
 
 type EventType =
   'm.room.canonical_alias'| 'm.room.create' | 'm.room.join_rules'
   | 'm.room.member' | 'm.room.power_levels' | 'm.room.name'
   | 'm.room.topic' | 'm.room.avatar' | 'm.room.pinned_events'
+  | 'm.room.history_visibility'
 
 export class Events {
   clientData: ClientLocalData
@@ -178,6 +180,11 @@ export class Events {
 
     eR = checkEv<MRoomPinnedEvents>('m.room.pinned_events', schema.m_room_pinned_events, (c) => {
       room.state.pinnedEvents = c.pinned
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomHistoryVisibility>('m.room.history_visibility', schema.m_room_history_visibility, (c) => {
+      room.state.historyVisibility = c.history_visibility
     })
     if (eR != undefined) return eR
 

@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "history_visibility": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "joined",
+        "shared",
+        "world_readable"
+      ]
+    }
+  },
+  "required": [
+    "history_visibility"
+  ]
+}

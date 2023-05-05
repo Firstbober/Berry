@@ -26,6 +26,7 @@ export namespace cache {
         },
 
         pinnedEvents: string[],
+        historyVisibility: 'invited' | 'joined' | 'shared' | 'world_readable',
 
         canonicalAlias?: string,
         alternativeAliases?: string[],
@@ -95,6 +96,9 @@ export namespace cache {
               creator: '',
               federate: true,
               version: '1',
+
+              pinnedEvents: [],
+              historyVisibility: 'shared',
 
               join_rules: {
                 rule: 'invite',

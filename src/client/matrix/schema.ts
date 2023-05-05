@@ -36,6 +36,7 @@ import fs_m_room_name from './schema/m_room_name.json'
 import fs_m_room_topic from './schema/m_room_topic.json'
 import fs_m_room_avatar from './schema/m_room_avatar.json'
 import fs_m_pinned_events from './schema/m_room_pinned_events.json'
+import fs_m_history_visibility from './schema/m_room_history_visibility.json'
 
 const parserOptions: ValidatorOptions = {
   mode: 'default',
@@ -264,6 +265,7 @@ namespace schema {
   export const m_room_topic = validator(fs_m_room_topic, parserOptions)
   export const m_room_avatar = validator(fs_m_room_avatar, parserOptions)
   export const m_room_pinned_events = validator(fs_m_pinned_events, parserOptions)
+  export const m_room_history_visibility = validator(fs_m_history_visibility, parserOptions)
 }
 
 export default schema

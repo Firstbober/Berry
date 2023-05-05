@@ -18,14 +18,12 @@ export namespace cache {
 
         join_rules: {
           rule: 'public' | 'knock' | 'invite' | 'private' | 'restricted'
-          allow: {
-            roomID?: string,
+          allow: {[roomID: string]: {
             type: 'm.room_membership'
-          }[]
+          }}
         },
 
-        members: {
-          id: string,
+        members: { [id: string]: {
           avatarUrl?: string,
           displayName?: string,
           membership: 'invite' | 'join' | 'knock' | 'leave' | 'ban',
@@ -33,7 +31,7 @@ export namespace cache {
             displayName: string
           },
           powerLevel: number
-        }[],
+        } },
 
         powerLevels: {
           ban: number,
@@ -74,10 +72,10 @@ export namespace cache {
 
               join_rules: {
                 rule: 'invite',
-                allow: []
+                allow: {}
               },
 
-              members: [],
+              members: {},
 
               powerLevels: {
                 ban: 50,

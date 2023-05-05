@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "properties": {
+    "avatar_url": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "is_direct": {
+      "type": "boolean"
+    },
+    "join_authorised_via_users_server": {
+      "type": "string"
+    },
+    "membership": {
+      "type": "string",
+      "enum": [
+        "invite",
+        "join",
+        "knock",
+        "leave",
+        "ban"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "third_party_invite": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "display_name"
+      ]
+    }
+  },
+  "required": [
+    "membership"
+  ]
+}

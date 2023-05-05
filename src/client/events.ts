@@ -9,8 +9,9 @@ import { GETClientV3Sync } from './matrix/schema/gen_types/GET_client_v3_sync'
 import { MRoomCanonicalAlias } from './matrix/schema/gen_types/m_room_canonical_alias'
 import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
 import { MRoomJoinRules } from './matrix/schema/gen_types/m_room_join_rules'
+import { MRoomMember } from './matrix/schema/gen_types/m_room_member'
 
-type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules'
+type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules' | 'm.room.member'
 
 export class Events {
   clientData: ClientLocalData
@@ -83,11 +84,27 @@ export class Events {
 
       if (c.allow) {
         for (const allowRule of c.allow) {
-          room.state.join_rules.allow.push({
-            roomID: allowRule.room_id,
+          room.state.join_rules.allow = {}
+          room.state.join_rules.allow[allowRule.room_id] = {
             type: allowRule.type
-          })
+          }
         }
+      }
+    })
+    if (eR != undefined) return eR
+
+    eR = checkEv<MRoomMember>('m.room.member', schema.m_room_member, (c) => {
+      room.state.members = {}
+      room.state.members[ev.state_key] = {
+        avatarUrl: c.avatar_url,
+        displayName: c.display_name,
+        membership: c.membership,
+        thirdPartyInvite: c.third_party_invite
+          ? {
+              displayName: c.third_party_invite.display_name
+            }
+          : undefined,
+        powerLevel: room.state.powerLevels.usersDefault
       }
     })
     if (eR != undefined) return eR

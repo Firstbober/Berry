@@ -31,6 +31,7 @@ import fs_m_room_create from './schema/m_room_create.json'
 import fs_m_room_canonical_alias from './schema/m_room_canonical_alias.json'
 import fs_m_room_join_rules from './schema/m_room_join_rules.json'
 import fs_m_room_member from './schema/m_room_member.json'
+import fs_m_room_power_levels from './schema/m_room_power_levels.json'
 
 const parserOptions: ValidatorOptions = {
   mode: 'default',
@@ -254,6 +255,7 @@ namespace schema {
   export const m_room_canonical_alias = validator(fs_m_room_canonical_alias, parserOptions)
   export const m_room_join_rules = validator(fs_m_room_join_rules, parserOptions)
   export const m_room_member = validator(fs_m_room_member, parserOptions)
+  export const m_room_power_levels = validator(fs_m_room_power_levels, parserOptions)
 }
 
 export default schema

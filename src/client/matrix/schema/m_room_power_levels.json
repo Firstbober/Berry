@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "properties": {
+    "ban": {
+      "type": "number"
+    },
+    "events": {
+      "type": "object",
+      "patternProperties": {
+        "^.": {
+          "type": "number"
+        }
+      }
+    },
+    "events_default": {
+      "type": "number"
+    },
+    "invite": {
+      "type": "number"
+    },
+    "kick": {
+      "type": "number"
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "room": {
+          "type": "number"
+        }
+      }
+    },
+    "redact": {
+      "type": "number"
+    },
+    "state_default": {
+      "type": "number"
+    },
+    "users": {
+      "type": "object",
+      "patternProperties": {
+        "^.": {
+          "type": "number"
+        }
+      }
+    },
+    "users_default": {
+      "type": "number"
+    }
+  },
+  "required": []
+}

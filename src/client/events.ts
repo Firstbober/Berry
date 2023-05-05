@@ -10,8 +10,9 @@ import { MRoomCanonicalAlias } from './matrix/schema/gen_types/m_room_canonical_
 import { MRoomCreate } from './matrix/schema/gen_types/m_room_create'
 import { MRoomJoinRules } from './matrix/schema/gen_types/m_room_join_rules'
 import { MRoomMember } from './matrix/schema/gen_types/m_room_member'
+import { MRoomPowerLevels } from './matrix/schema/gen_types/m_room_power_levels'
 
-type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules' | 'm.room.member'
+type EventType = 'm.room.canonical_alias' | 'm.room.create' | 'm.room.join_rules' | 'm.room.member' | 'm.room.power_levels'
 
 export class Events {
   clientData: ClientLocalData
@@ -109,6 +110,25 @@ export class Events {
     })
     if (eR != undefined) return eR
 
+    eR = checkEv<MRoomPowerLevels>('m.room.power_levels', schema.m_room_power_levels, (c) => {
+      room.state.powerLevels.changed = true
+
+      room.state.powerLevels.ban = c.ban ?? 50
+      room.state.powerLevels.events = c.events ?? {}
+      room.state.powerLevels.eventsDefault = c.events_default ?? 0
+      room.state.powerLevels.invite = c.invite ?? 0
+      room.state.powerLevels.kick = c.kick ?? 50
+      room.state.powerLevels.notifications = {
+        room: c.notifications ? c.notifications.room ?? 50 : 50
+      }
+      room.state.powerLevels.redact = c.redact ?? 50
+      room.state.powerLevels.stateDefault = c.state_default ?? 0
+      room.state.powerLevels.usersDefault = c.users_default ?? 0
+
+      room.state.powerLevels.memberLevels = c.users ?? {}
+    })
+    if (eR != undefined) return eR
+
     return eR
   }
 
@@ -158,8 +178,17 @@ export class Events {
     const readStateEvents = (room: cache.Room, events: ClientEventWithoutRoomID[]) => {
       const changes: [string, EventType][] = []
 
+      // Iterate over events.
       for (const event of events) {
         if (event.state_key != undefined || event.state_key == '') changes.push(this.roomStateEvent(room, event))
+      }
+
+      // Set member power level based on m.room.power_levels event.
+      if (room.state.powerLevels.changed) {
+        for (const [mId, mL] of Object.entries(room.state.powerLevels.memberLevels)) {
+          if (!Object.hasOwn(room.state.members, mId)) continue
+          room.state.members[mId].powerLevel = mL
+        }
       }
 
       return changes

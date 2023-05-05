@@ -34,6 +34,8 @@ export namespace cache {
         } },
 
         powerLevels: {
+          changed: boolean,
+
           ban: number,
           events: {[k: string]: number},
           eventsDefault: number,
@@ -44,7 +46,9 @@ export namespace cache {
           },
           redact: number,
           stateDefault: number,
-          usersDefault: number
+          usersDefault: number,
+
+          memberLevels: { [id: string]: number }
         }
       }
     }
@@ -78,6 +82,8 @@ export namespace cache {
               members: {},
 
               powerLevels: {
+                changed: false,
+
                 ban: 50,
                 events: {},
                 eventsDefault: 0,
@@ -87,8 +93,10 @@ export namespace cache {
                   room: 50
                 },
                 redact: 50,
-                stateDefault: 50,
-                usersDefault: 0
+                stateDefault: 0,
+                usersDefault: 0,
+
+                memberLevels: {}
               }
             }
           }
